@@ -197,7 +197,6 @@ namespace Werewolf.Models
             var _12_8 = new RoleSetup { SetupName = "12 人 白狼/狼美人&守衛騎士 + 3狼+白狼王+4神(預言家+女巫+騎士+守衛)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_8, Role.Werewolf, 3);
             SetRoleCount(_12_8, Role.WhiteWolfKing, 1);
-            SetRoleCount(_12_8, Role.WolfBeauty, 1);
             SetRoleCount(_12_8, Role.Villager, 4);
             SetRoleCount(_12_8, Role.Seer, 1);
             SetRoleCount(_12_8, Role.Witch, 1);
@@ -205,16 +204,80 @@ namespace Werewolf.Models
             SetRoleCount(_12_8, Role.Knight, 1);
             setups.Add(_12_8);
 
-            var _12_9 = new# RoleSetup { SetupName = "12 人 血月使徒&獵魔人 - 3狼+血月使徒+4神(預言家+女巫+獵魔人+白癡)+4民", Roles = GetBaseRoles() };
-            SetRoleCount(_12_8, Role.Werewolf, 3);
-            SetRoleCount(_12_8, Role.WhiteWolfKing, 1);
-            SetRoleCount(_12_8, Role.WolfBeauty, 1);
-            SetRoleCount(_12_8, Role.Villager, 4);
-            SetRoleCount(_12_8, Role.Seer, 1);
-            SetRoleCount(_12_8, Role.Witch, 1);
-            SetRoleCount(_12_8, Role.Guard, 1);
-            SetRoleCount(_12_8, Role.Knight, 1);
-            setups.Add(_12_8);
+            var _12_9 = new RoleSetup { SetupName = "12 人 血月使徒&獵魔人 - 3狼+血月使徒+4神(預言家+女巫+獵魔人+白癡)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_9, Role.Werewolf, 3);
+            SetRoleCount(_12_9, Role.BloodMoonApostle, 1);
+            SetRoleCount(_12_9, Role.Villager, 4);
+            SetRoleCount(_12_9, Role.Seer, 1);
+            SetRoleCount(_12_9, Role.Witch, 1);
+            SetRoleCount(_12_9, Role.DemonHunter, 1);
+            SetRoleCount(_12_9, Role.Idiot, 1);
+            setups.Add(_12_9);
+
+            var _12_10 = new RoleSetup { SetupName = "12 人 狼王&攝夢人 - 3狼+狼王+4神(預言家+女巫+獵人+攝夢人)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_10, Role.Werewolf, 3);
+            SetRoleCount(_12_10, Role.WolfKing, 1);
+            SetRoleCount(_12_10, Role.Villager, 4);
+            SetRoleCount(_12_10, Role.Seer, 1);
+            SetRoleCount(_12_10, Role.Witch, 1);
+            SetRoleCount(_12_10, Role.Dreamcatcher, 1);
+            SetRoleCount(_12_10, Role.Hunter, 1);
+            setups.Add(_12_10);
+
+            var _12_11 = new RoleSetup { SetupName = "12 人 隱狼&烏鴉 - 3狼+隱狼+4神(預言家+女巫+獵人+烏鴉)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_11, Role.Werewolf, 3);
+            SetRoleCount(_12_11 Role.HiddenWolf, 1);
+            SetRoleCount(_12_11, Role.Villager, 4);
+            SetRoleCount(_12_11, Role.Seer, 1);
+            SetRoleCount(_12_11, Role.Witch, 1);
+            SetRoleCount(_12_11, Role.Crow, 1);
+            SetRoleCount(_12_11, Role.Hunter, 1);
+            setups.Add(_12_11);
+
+            var _12_12 = new RoleSetup { SetupName = "12 人 野孩子 - 3狼+野孩子+4神(預言家+女巫+獵人+白痴)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_12, Role.Werewolf, 3);
+            SetRoleCount(_12_12 Role.WildChild, 1);
+            SetRoleCount(_12_12, Role.Villager, 4);
+            SetRoleCount(_12_12, Role.Seer, 1);
+            SetRoleCount(_12_12, Role.Witch, 1);
+            SetRoleCount(_12_12, Role.Hunter, 1);
+            SetRoleCount(_12_12, Role.Idiot, 1);
+            setups.Add(_12_12);
+
+            var _12_13 = new RoleSetup { SetupName = "12 人 狼美人&騎士/老流氓 - 3狼+狼美人+4神(預言家+女巫+獵人+騎士/老流氓)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_13, Role.Werewolf, 3);
+            SetRoleCount(_12_13 Role.WolfBeauty, 1);
+            SetRoleCount(_12_13, Role.Villager, 4);
+            SetRoleCount(_12_13, Role.Seer, 1);
+            SetRoleCount(_12_13, Role.Witch, 1);
+            SetRoleCount(_12_13, Role.Hunter, 1);
+            SetRoleCount(_12_13, Role.Knight, 1);
+            SetRoleCount(_12_13, Role.OldHooligan, 1);
+            setups.Add(_12_13);
+
+            var _12_14 = new RoleSetup { SetupName = "12 人 惡靈騎士&守衛 - 3狼+惡靈騎士+4神(預言家+女巫+獵人+守衛)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_14, Role.Werewolf, 3);
+            SetRoleCount(_12_14 Role.GhostRider, 1);
+            SetRoleCount(_12_14, Role.Villager, 4);
+            SetRoleCount(_12_14, Role.Seer, 1);
+            SetRoleCount(_12_14, Role.Witch, 1);
+            SetRoleCount(_12_14, Role.Hunter, 1);
+            SetRoleCount(_12_14, Role.Guard, 1);
+            setups.Add(_12_14);
+
+            var _12_15 = new RoleSetup { SetupName = "12 人 狼王&邱比特/盜賊 - 2狼+狼王+4神(預言家+女巫+獵人+白痴)+邱比特/盜賊+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_15, Role.Werewolf, 2);
+            SetRoleCount(_12_15 Role.WolfKing, 1);
+            SetRoleCount(_12_15, Role.Villager, 4);
+            SetRoleCount(_12_15, Role.Seer, 1);
+            SetRoleCount(_12_15, Role.Witch, 1);
+            SetRoleCount(_12_15, Role.Hunter, 1);
+            SetRoleCount(_12_15, Role.Idiot, 1);
+            SetRoleCount(_12_15, Role.Cupid, 1);
+            SetRoleCount(_12_15, Role.Thief, 1);
+            setups.Add(_12_15);
+
+
 
             return setups;
         }
