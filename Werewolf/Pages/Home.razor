@@ -1,0 +1,124 @@
+﻿@page "/"
+@using Werewolf.Models
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudCard Elevation="4" Style="background-color: #1e1e1e; border-radius: 12px;">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Align="Align.Center">新增遊戲配置</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+
+        <MudCardContent>
+            @* 1. 選擇推薦版子 *@
+            <MudSelect T="RoleSetup" Label="選擇版子" Value="SelectedSetup" ValueChanged="OnSetupSelected"
+                       ToStringFunc="@(s => s == null ? "" : $"{s.SetupName} ({s.TotalPlayers} 人)")"
+                       Variant="Variant.Outlined" Class="mb-6">
+
+                @foreach (var setup in RecommendSetups)
+                {
+                    <MudSelectItem Value="@setup">@setup.SetupName (@setup.TotalPlayers 人)</MudSelectItem>
+                }
+                <MudSelectItem Value="CustomSetup">自訂配置...</MudSelectItem>
+            </MudSelect>
+
+            @* 2. 顯示並允許微調角色數量 *@
+            @if (CurrentSetup != null)
+            {
+                <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4 mt-2">
+
+                    @* 狼人陣營 *@
+                    <MudTabPanel Text="狼人">
+                        <MudGrid>
+                            @foreach (var role in GetRolesByFaction("狼人"))
+                            {
+                                <MudItem xs="6" sm="4">
+                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="5" Variant="Variant.Text" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudTabPanel>
+
+                    @* 神職陣營 *@
+                    <MudTabPanel Text="神職">
+                        <MudGrid>
+                            @foreach (var role in GetRolesByFaction("神職"))
+                            {
+                                <MudItem xs="6" sm="4">
+                                    <MudSwitch T="bool" Color="Color.Primary" Label="@role.Name"
+                                               Checked="@(role.Count > 0)"
+                                               CheckedChanged="@((bool c) => { role.Count = c ? 1 : 0; })" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudTabPanel>
+
+                    @* 平民與第三方 *@
+                    <MudTabPanel Text="平民/第三方">
+                        <MudGrid>
+                            @foreach (var role in GetRolesByFaction("平民").Concat(GetRolesByFaction("第三方")))
+                            {
+                                <MudItem xs="6" sm="4">
+                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudTabPanel>
+
+                </MudTabs>
+
+                <MudAlert Severity="Severity.Info" Class="mt-6">
+                    目前配置總人數： <strong>@CurrentSetup.TotalPlayers</strong> 人
+                </MudAlert>
+            }
+        </MudCardContent>
+
+        <MudCardActions Class="d-flex justify-center pb-6">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                       StartIcon="@Icons.Material.Filled.Group" Style="border-radius: 24px; width: 80%;"
+                       Disabled="@(CurrentSetup == null || CurrentSetup.TotalPlayers == 0)">
+                產生座位表
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    // 預設的推薦清單
+    private List<RoleSetup> RecommendSetups = new();
+
+    // 下拉選單選中的項目
+    private RoleSetup SelectedSetup;
+
+    // 法官當前正在操作/微調的配置 (我們把推薦配置 Clone 一份過來，以免改到原本的範本)
+    private RoleSetup CurrentSetup;
+
+    // 用於代表「自訂配置」的空白選項
+    private RoleSetup CustomSetup = new RoleSetup { SetupName = "自訂配置...", Roles = GameConfigurator.GetBaseRoles() };
+
+    protected override void OnInitialized()
+    {
+        // 頁面載入時，抓取推薦清單
+        RecommendSetups = GameConfigurator.GetRecommendations();
+
+        // 預設選中第一個版子
+        if (RecommendSetups.Any())
+        {
+            OnSetupSelected(RecommendSetups.First());
+        }
+    }
+
+    // 當下拉選單切換時觸發
+    private void OnSetupSelected(RoleSetup setup)
+    {
+        SelectedSetup = setup;
+        // 使用 Clone 複製一份，這樣法官在畫面上亂改數量，也不會影響到下拉選單裡的預設資料
+        CurrentSetup = setup.Clone();
+    }
+
+    // 輔助方法：根據陣營名稱過濾角色，供畫面綁定迴圈使用
+    private IEnumerable<RoleItem> GetRolesByFaction(string faction)
+    {
+        return CurrentSetup?.Roles.Where(r => r.Faction == faction) ?? Enumerable.Empty<RoleItem>();
+    }
+}

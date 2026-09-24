@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudSnackbarProvider /> <!-- 彈出式提示框服務 -->
+<MudPopoverProvider /> <!-- 就是少了這一行！ -->
+
+<MudLayout>
+    <MudAppBar Elevation="1" Color="Color.Dark">
+        <MudIcon Icon="@Icons.Material.Filled.Nightlight" Class="mr-3" />
+        <MudText Typo="Typo.h6">狼人殺法官</MudText>
+    </MudAppBar>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
