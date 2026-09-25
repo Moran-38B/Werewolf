@@ -3,7 +3,6 @@
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
     <MudGrid>
         @* 頂部標題與總人數 *@
         <MudItem xs="12" Class="d-flex justify-space-between align-center mb-2">
@@ -12,8 +11,8 @@
             </MudText>
         </MudItem>
 
-        @* 推薦配置選單 (設定為 xs="12" md="8"，讓它在 iPad 橫向佔據大部分空間) *@
-        <MudItem xs="12" md="8">
+        @* 推薦配置選單 *@
+        <MudItem xs="12" md="7" lg="8">
             <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
                 @foreach (var setup in Recommendations)
                 {
@@ -23,10 +22,10 @@
             </MudSelect>
         </MudItem>
 
-        @* 右上角的操作按鈕 (設定為 xs="12" md="4"，與選單並排) *@
-        <MudItem xs="12" md="4" Class="d-flex justify-end align-center">
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="mr-3 flex-grow-1" Style="height: 56px;">
-                規則
+        @* 右上角的操作按鈕 (加入 flex-column flex-sm-row 與 gap-3 解決手機重疊問題) *@
+        <MudItem xs="12" md="5" lg="4" Class="d-flex flex-column flex-sm-row gap-3">
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="flex-grow-1" Style="height: 56px;">
+                遊戲規則
             </MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Class="flex-grow-1" Style="height: 56px;">
                 產生座位
@@ -34,31 +33,52 @@
         </MudItem>
 
         <MudItem xs="12">
-            <MudDivider Class="my-4" />
+            <MudDivider Class="my-2" />
         </MudItem>
 
-        @* 下方的狼人/平民與神職配置區塊 (維持 6 : 6 比例) *@
-        <MudItem xs="12" md="6">
-            <MudCard Elevation="2" Class="pa-4 h-100">
-                <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-4">狼人與平民陣營 (數量)</MudText>
-                <MudGrid>
-                    @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人" || r.Faction == "平民"))
-                    {
-                        <MudItem xs="6">
-                            <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
-                        </MudItem>
-                    }
-                </MudGrid>
-            </MudCard>
+        @* 左側區塊：狼人陣營與平民陣營 (分成兩張獨立的卡片) *@
+        <MudItem xs="12" md="5">
+            <MudGrid>
+                @* 狼人陣營 *@
+                <MudItem xs="12">
+                    <MudCard Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">狼人陣營</MudText>
+                        <MudGrid>
+                            @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
+                            {
+                                <MudItem xs="6">
+                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudCard>
+                </MudItem>
+
+                @* 平民陣營 *@
+                <MudItem xs="12">
+                    <MudCard Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-2">平民陣營</MudText>
+                        <MudGrid>
+                            @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "平民"))
+                            {
+                                <MudItem xs="6">
+                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
         </MudItem>
 
-        <MudItem xs="12" md="6">
+        @* 右側區塊：神職與第三方陣營 *@
+        <MudItem xs="12" md="7">
             <MudCard Elevation="2" Class="pa-4 h-100">
-                <MudText Typo="Typo.h6" Color="Color.Warning" Class="mb-4">神職與第三方陣營 (勾選)</MudText>
+                <MudText Typo="Typo.h6" Color="Color.Warning" Class="mb-4">神職與第三方陣營</MudText>
                 <MudGrid>
                     @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "神職" || r.Faction == "第三方"))
                     {
-                        <MudItem xs="6" sm="4">
+                        <MudItem xs="6" sm="4" lg="3">
                             <MudCheckBox T="bool" 
                                          Value="@(role.Count > 0)" 
                                          ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))" 
@@ -70,8 +90,6 @@
             </MudCard>
         </MudItem>
     </MudGrid>
-</MudContainer>
-
 </MudContainer>
 
 @* 遊戲規則設定對話框 *@
@@ -101,20 +119,16 @@
     private RoleSetup CurrentSetup = new();
     private RoleSetup CustomSetup = new() { SetupName = "自訂配置", Roles = GameConfigurator.GetBaseRoles() };
 
-		// 遊戲規則
-		private GameRule GlobalRule = new();
+    private GameRule GlobalRule = new(); 
 
-    // 動態計算總人數 (透過 Linq 的 Sum 快速加總所有角色的 Count)
     public int TotalPlayers => CurrentSetup?.Roles?.Sum(r => r.Count) ?? 0;
 
-    // 設定對話框控制
     private bool isSettingsOpen = false;
     private DialogOptions dialogOptions = new() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
 
     protected override void OnInitialized()
     {
         Recommendations = GameConfigurator.GetRecommendations();
-        // 預設載入第一個推薦版子
         if (Recommendations.Any())
         {
             CurrentSetup = Recommendations.First();
@@ -125,19 +139,15 @@
         }
     }
 
-    // 當下拉選單切換版子時觸發
     private void OnSetupChanged(RoleSetup setup)
     {
         CurrentSetup = setup;
         StateHasChanged();
     }
 
-    // 當神職的 CheckBox 被勾選或取消時觸發
     private void OnRoleChecked(RoleItem role, bool isChecked)
     {
-        // 勾選就設定數量為 1，取消勾選就設為 0
         role.Count = isChecked ? 1 : 0;
-        // 強制更新畫面，讓上方總人數重新計算
         StateHasChanged();
     }
 
@@ -148,8 +158,6 @@
 
     private void StartGame()
     {
-        // TODO: 之後會在這裡實作將 CurrentSetup 存進 GameManager
-        // 暫時先直接導航到遊戲控制台
         NavigationManager.NavigateTo("/game");
     }
 }
