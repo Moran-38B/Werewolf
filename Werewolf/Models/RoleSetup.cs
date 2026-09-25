@@ -12,12 +12,17 @@ namespace Werewolf.Models
 
     // 單一角色項目 (剛剛不小心遺失的類別)
     public class RoleItem
-    {
-        public Role Role { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Faction { get; set; } = string.Empty;
-        public int Count { get; set; } = 0;
-    }
+	{
+    	public string Name { get; set; } = "";
+    	public string Faction { get; set; } = "";
+    	public int Count { get; set; } = 0;
+    
+    	// 百科擴充屬性
+    	public string Description { get; set; } = "";
+    	public string Advantage { get; set; } = "";
+		public string Disadvantage { get; set; } = "";
+	}
+
 
     // 角色配置 (不再包含 Rule)
     public class RoleSetup
