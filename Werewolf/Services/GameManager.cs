@@ -10,9 +10,12 @@ namespace Werewolf.Services
         public RoleSetup CurrentSetup { get; set; } = new();
         
         public List<Player> Players { get; set; } = new();
-        public List<string> BottomCards { get; set; } = new();
+        
+        // 底牌改存 Role Enum
+        public List<Role> BottomCards { get; set; } = new();
 
-        public bool HasThief => CurrentSetup.Roles.Any(r => r.Name == "盜賊" && r.Count > 0);
+        // 判斷盜賊 (改用 Enum)
+        public bool HasThief => CurrentSetup.Roles.Any(r => r.Role == Role.Thief && r.Count > 0);
 
         public void InitializeGame()
         {
@@ -27,6 +30,7 @@ namespace Werewolf.Services
                 Players.Add(new Player
                 {
                     SeatNumber = i,
+                    Role = Role.Unknown,
                     RoleName = "未知身分",
                     Faction = "未知"
                 });
@@ -34,8 +38,8 @@ namespace Werewolf.Services
 
             if (HasThief)
             {
-                BottomCards.Add("未知身分");
-                BottomCards.Add("未知身分");
+                BottomCards.Add(Role.Unknown);
+                BottomCards.Add(Role.Unknown);
             }
         }
     }
