@@ -78,17 +78,14 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        @if (CurrentSetup.Rule != null)
-        {
-            <MudRadioGroup @bind-Value="CurrentSetup.Rule.IsKillSide" T="bool" Class="mb-4">
-                <MudText Typo="Typo.subtitle2" Class="mb-1">勝利條件</MudText>
-                <MudRadio Value="@true" Color="Color.Primary">屠邊 (殺光神職 或 殺光平民)</MudRadio>
-                <MudRadio Value="@false" Color="Color.Error">屠城 (殺光所有好人)</MudRadio>
-            </MudRadioGroup>
+        <MudRadioGroup @bind-Value="GlobalRule.IsKillSide" T="bool" Class="mb-4">
+            <MudText Typo="Typo.subtitle2" Class="mb-1">勝利條件</MudText>
+            <MudRadio Value="@true" Color="Color.Primary">屠邊 (殺光神職 或 殺光平民)</MudRadio>
+            <MudRadio Value="@false" Color="Color.Error">屠城 (殺光所有好人)</MudRadio>
+        </MudRadioGroup>
 
-            <MudSwitch @bind-Value="CurrentSetup.Rule.WitchCanSaveSelf" Color="Color.Success" Label="女巫首夜可自救" Class="mb-2" />
-            <MudSwitch @bind-Value="CurrentSetup.Rule.DoubleDeadValid" Color="Color.Warning" Label="同守同救存活 (關閉則視為奶穿雙死)" />
-        }
+        <MudSwitch @bind-Value="GlobalRule.WitchCanSaveSelf" Color="Color.Success" Label="女巫首夜可自救" Class="mb-2" />
+        <MudSwitch @bind-Value="GlobalRule.DoubleDeadValid" Color="Color.Warning" Label="同守同救存活 (關閉則視為奶穿雙死)" />
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="() => isSettingsOpen = false">完成設定</MudButton>
@@ -99,6 +96,9 @@
     private List<RoleSetup> Recommendations = new();
     private RoleSetup CurrentSetup = new();
     private RoleSetup CustomSetup = new() { SetupName = "自訂配置", Roles = GameConfigurator.GetBaseRoles() };
+
+		// 遊戲規則
+		private GameRule GlobalRule = new();
 
     // 動態計算總人數 (透過 Linq 的 Sum 快速加總所有角色的 Count)
     public int TotalPlayers => CurrentSetup?.Roles?.Sum(r => r.Count) ?? 0;
