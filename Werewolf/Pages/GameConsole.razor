@@ -115,7 +115,7 @@
     {
         if (GameManager.CurrentSetup.Roles.Sum(r => r.Count) == 0)
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("");
             return;
         }
 
@@ -162,6 +162,6 @@
     private void EndGame()
     {
         GameManager.Players.Clear();
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("");
     }
 }
