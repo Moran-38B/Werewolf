@@ -33,14 +33,14 @@
                     {
                         var index = i; // 必須用區域變數捕捉，否則 Blazor 綁定會出錯
                         <MudItem xs="6" sm="4" md="3">
-                            <MudSelect T="string" Label="@($"底牌 {index + 1}")" Value="@GameManager.BottomCards[index]" ValueChanged="@((string name) => GameManager.BottomCards[index] = name)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
-                                <MudSelectItem Value="@("未知身分")">未知身分</MudSelectItem>
-                                @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
-                                {
-                                    <MudSelectItem Value="@role.Name">@role.Name</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
+                        		<MudSelect T="Role" Label="@($"底牌 {index + 1}")" Value="@GameManager.BottomCards[index]" ValueChanged="@((Role r) => GameManager.BottomCards[index] = r)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+            										<MudSelectItem Value="@Role.Unknown">未知身分</MudSelectItem>
+            												@foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
+            												{
+                												<MudSelectItem Value="@role.Role">@role.Name</MudSelectItem>
+            												}
+        												</MudSelect>
+
                     }
                 </MudGrid>
             </MudCard>
@@ -67,15 +67,14 @@
                     </div>
                     
                     @* 讓法官選擇該座位的真實身分 *@
-                    <MudSelect T="string" Label="設定身分" Value="@player.RoleName" ValueChanged="@((string name) => OnRoleAssigned(player, name))" Variant="Variant.Text" Margin="Margin.Dense" Class="mt-2">
-                        <MudSelectItem Value="@("未知身分")">未知身分</MudSelectItem>
-                        @* 只列出首頁有設定數量的角色 *@
-                        @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
-                        {
-                            <MudSelectItem Value="@role.Name">@role.Name</MudSelectItem>
-                        }
-                    </MudSelect>
-                    
+                    <MudSelect T="Role" Label="設定身分" Value="@player.Role" ValueChanged="@((Role r) => OnRoleAssigned(player, r))" Variant="Variant.Text" Margin="Margin.Dense" Class="mt-2">
+            						<MudSelectItem Value="@Role.Unknown">未知身分</MudSelectItem>
+            								@foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
+            								{
+                								<MudSelectItem Value="@role.Role">@role.Name</MudSelectItem>
+       					     				}
+					  	      </MudSelect>
+
                     @* 顯示該角色的所屬陣營 *@
                     @if (player.RoleName != "未知身分")
                     {
@@ -137,20 +136,25 @@
     }
 
     // 當法官在下拉選單選擇身分時，自動綁定對應的陣營
-    private void OnRoleAssigned(Player player, string selectedRoleName)
+    private void OnRoleAssigned(Player player, Role selectedRole)
     {
-        player.RoleName = selectedRoleName;
+        player.Role = selectedRole;
         
-        var setupRole = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Name == selectedRoleName);
+        var setupRole = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == selectedRole);
         if (setupRole != null)
         {
+            // 同步更新中文名稱與陣營給 UI 顯示
+            player.RoleName = setupRole.Name;
             player.Faction = setupRole.Faction;
         }
         else
         {
+            player.RoleName = "未知身分";
             player.Faction = "未知";
         }
     }
+
+
 
     private Color GetFactionColor(string faction)
     {
