@@ -5,42 +5,47 @@
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
     <MudGrid>
         @* 頂部標題與總人數 *@
-        <MudItem xs="12" Class="d-flex justify-space-between align-center mb-2">
+        <MudItem xs="12" Class="mb-2">
             <MudText Typo="Typo.h4" Color="Color.Primary">
                 <b>建立遊戲</b> (目前 @TotalPlayers 人)
             </MudText>
         </MudItem>
 
-        @* 推薦配置與操作按鈕 (整合為一個 Flex 容器，確保橫向完美對齊) *@
+        @* 推薦配置與操作按鈕 (使用 MudGrid 並設定 AlignItems.End 讓它們底部對齊) *@
         <MudItem xs="12">
-            <div class="d-flex flex-column flex-md-row gap-4 align-start">
-                
+            <MudGrid Spacing="3" AlignItems="AlignItems.End">
                 @* 左側：推薦配置下拉選單 *@
-                <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="flex-grow-1">
-                    @foreach (var setup in Recommendations)
-                    {
-                        <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
-                    }
-                    <MudSelectItem Value="@CustomSetup">自訂配置</MudSelectItem>
-                </MudSelect>
+                <MudItem xs="12" md="8">
+                    <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true" Class="mb-0">
+                        @foreach (var setup in Recommendations)
+                        {
+                            <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
+                        }
+                        <MudSelectItem Value="@CustomSetup">自訂配置</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
 
-                @* 右側：操作按鈕 (設定與選單輸入框相同高度 56px) *@
-                <div class="d-flex gap-3 flex-shrink-0">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px; min-width: 120px;">
+                @* 右側：操作按鈕 *@
+                <MudItem xs="12" md="4" Class="d-flex gap-3">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="flex-grow-1" Style="height: 56px;">
                         遊戲規則
                     </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 56px; min-width: 140px;">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Class="flex-grow-1" Style="height: 56px;">
                         產生座位
                     </MudButton>
-                </div>
-
-            </div>
+                </MudItem>
+            </MudGrid>
         </MudItem>
 
-        @* 左半部：平民與狼人 (分開為上下兩張卡片) *@
+        <MudItem xs="12">
+            <MudDivider Class="my-2" />
+        </MudItem>
+
+        @* 左右分區：左邊 (平民+狼人)，右邊 (神職+第三方) *@
+        
+        @* ===== 左半區塊：平民與狼人 ===== *@
         <MudItem xs="12" md="6">
             <div class="d-flex flex-column gap-4 h-100">
-                
                 @* 1. 平民陣營區塊 *@
                 <MudCard Elevation="2" Class="pa-4">
                     <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-3">
@@ -50,8 +55,9 @@
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "平民"))
                         {
                             <MudItem xs="6" sm="4">
-																<MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
-                           </MudItem>
+                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
+                                                 Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
+                            </MudItem>
                         }
                     </MudGrid>
                 </MudCard>
@@ -65,23 +71,25 @@
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
                         {
                             <MudItem xs="6" sm="4">
-																<MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
-														</MudItem>
+                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
+                                                 Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
+                            </MudItem>
                         }
                     </MudGrid>
                 </MudCard>
-
             </div>
         </MudItem>
 
-        @* 右側區塊：神職與第三方陣營 *@
-        <MudItem xs="12" md="7">
+        @* ===== 右半區塊：神職與第三方陣營 ===== *@
+        <MudItem xs="12" md="6">
             <MudCard Elevation="2" Class="pa-4 h-100">
-                <MudText Typo="Typo.h6" Color="Color.Warning" Class="mb-4">神職與第三方陣營</MudText>
+                <MudText Typo="Typo.h6" Color="Color.Warning" Class="mb-4">
+                    <MudIcon Icon="@Icons.Material.Filled.Stars" Size="Size.Small" Class="mr-2 mb-n1"/> 神職與第三方 (勾選)
+                </MudText>
                 <MudGrid>
                     @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "神職" || r.Faction == "第三方"))
                     {
-                        <MudItem xs="6" sm="4" lg="3">
+                        <MudItem xs="6" sm="4">
                             <MudCheckBox T="bool" 
                                          Value="@(role.Count > 0)" 
                                          ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))" 
@@ -92,6 +100,7 @@
                 </MudGrid>
             </MudCard>
         </MudItem>
+
     </MudGrid>
 </MudContainer>
 
@@ -121,9 +130,9 @@
     private List<RoleSetup> Recommendations = new();
     private RoleSetup CurrentSetup = new();
     private RoleSetup CustomSetup = new() { SetupName = "自訂配置", Roles = GameConfigurator.GetBaseRoles() };
+    private GameRule GlobalRule = new(); // 獨立的遊戲規則設定
 
-    private GameRule GlobalRule = new(); 
-
+    // 動態計算總人數
     public int TotalPlayers => CurrentSetup?.Roles?.Sum(r => r.Count) ?? 0;
 
     private bool isSettingsOpen = false;
@@ -161,6 +170,7 @@
 
     private void StartGame()
     {
+        // TODO: 建立 GameManager 後，將設定寫入並導航
         NavigationManager.NavigateTo("/game");
     }
 }
