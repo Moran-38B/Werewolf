@@ -226,7 +226,7 @@ namespace Werewolf.Models
 
             var _12_11 = new RoleSetup { SetupName = "12 人 隱狼&烏鴉 - 3狼+隱狼+4神(預言家+女巫+獵人+烏鴉)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_11, Role.Werewolf, 3);
-            SetRoleCount(_12_11 Role.HiddenWolf, 1);
+            SetRoleCount(_12_11, Role.HiddenWolf, 1);
             SetRoleCount(_12_11, Role.Villager, 4);
             SetRoleCount(_12_11, Role.Seer, 1);
             SetRoleCount(_12_11, Role.Witch, 1);
