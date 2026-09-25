@@ -50,9 +50,8 @@
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "平民"))
                         {
                             <MudItem xs="6" sm="4">
-                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
-                                                 Variant="Variant.Outlined" Margin="Margin.Dense" inputmode="none" />
-                            </MudItem>
+																<MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
+                           </MudItem>
                         }
                     </MudGrid>
                 </MudCard>
@@ -66,9 +65,8 @@
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
                         {
                             <MudItem xs="6" sm="4">
-                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
-                                                 Variant="Variant.Outlined" Margin="Margin.Dense" inputmode="none" />
-                            </MudItem>
+																<MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
+														</MudItem>
                         }
                     </MudGrid>
                 </MudCard>
@@ -98,7 +96,7 @@
 </MudContainer>
 
 @* 遊戲規則設定對話框 *@
-<MudDialog @bind-IsVisible="isSettingsOpen" Options="dialogOptions">
+<MudDialog @bind-Visible="isSettingsOpen" Options="dialogOptions">
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Gavel" Class="mr-3"/> 遊戲規則設定
