@@ -8,7 +8,7 @@
     @* 頂部資訊列 *@
     <MudItem xs="12" Class="mb-4 d-flex justify-space-between align-center">
         <MudText Typo="Typo.h4" Color="Color.Primary">
-            <b>法官登記板</b> (@GameManager.Players.Count 人局)
+            <b>第一晚：身分派發與確認</b>
         </MudText>
         <div class="d-flex gap-2">
             <MudButton Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.MenuBook" OnClick="OpenEncyclopedia">
@@ -20,13 +20,13 @@
         </div>
     </MudItem>
 
-    @* 盜賊專屬：底牌登記區 *@
+    @* 盜賊底牌區 *@
     @if (GameManager.HasThief)
     {
         <MudItem xs="12" Class="mb-4">
             <MudCard Elevation="2" Class="pa-4" Style="background-color: var(--mud-palette-background-grey);">
-                <MudText Typo="Typo.h6" Color="Color.Secondary" Class="mb-3">
-                    <MudIcon Icon="@Icons.Material.Filled.Visibility" Class="mr-2 mb-n1"/> 盜賊底牌區
+                <MudText Typo="Typo.subtitle1" Color="Color.Secondary" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Visibility" Class="mr-2 mb-n1" Size="Size.Small"/> 盜賊底牌區 (請在第一晚盜賊睜眼前登記)
                 </MudText>
                 <MudGrid>
                     @for (int i = 0; i < 2; i++)
@@ -47,58 +47,96 @@
         </MudItem>
     }
 
-    @* 座位網格 *@
-    <MudGrid Spacing="3">
-        @foreach (var player in GameManager.Players)
-        {
-            <MudItem xs="6" sm="4" md="3" lg="2">
-                <MudCard Elevation="3" Class="pa-4" Style="border-radius: 12px; height: 100%;">
-                    
-                    <div class="d-flex justify-space-between align-center mb-2">
-                        <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium">
-                            <b>@player.SeatNumber</b>
-                        </MudAvatar>
-                        
-                        @if (player.HasBadge)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.LocalPolice" Color="Color.Warning" />
-                        }
-                    </div>
-                    
-                    <MudSelect T="Role" Label="設定身分" Value="@player.Role" ValueChanged="@((Role r) => OnRoleAssigned(player, r))" Variant="Variant.Text" Margin="Margin.Dense" Class="mt-2">
-                        <MudSelectItem Value="@Role.Unknown">未知身分</MudSelectItem>
-                        @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
-                        {
-                            <MudSelectItem Value="@role.Role">@role.Name</MudSelectItem>
-                        }
-                    </MudSelect>
-                    
-                    @if (player.RoleName != "未知身分")
-                    {
-                        <MudText Typo="Typo.caption" Color="@GetFactionColor(player.Faction)" Class="d-block mt-2 text-center">
-                            @player.Faction
-                        </MudText>
-                    }
+    <MudGrid Spacing="4">
+        @* 左側/上方：法官調色盤 (睜眼順序) *@
+        <MudItem xs="12" md="5" lg="4">
+            <MudCard Elevation="3" Class="pa-4 sticky-top" Style="top: 20px;">
+                <MudText Typo="Typo.h6" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Palette" Class="mr-2 mb-n1"/> <b>步驟 1：選擇身分</b>
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Surface" Class="mb-4 mud-text-secondary">
+                    順著下方睜眼順序，點選身分後，再點擊右側對應座位。
+                </MudText>
 
-                </MudCard>
-            </MudItem>
-        }
+                @foreach (var phase in GetPhases())
+                {
+                    if (!phase.Roles.Any()) continue;
+                    
+                    <div class="mb-4">
+                        <MudText Typo="Typo.subtitle2" Class="mb-2 font-weight-bold" Color="Color.Primary">@phase.Name</MudText>
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var role in phase.Roles)
+                            {
+                                var assignedCount = GetAssignedCount(role.Role);
+                                var isCompleted = assignedCount >= role.Count;
+                                var isSelected = activeRole == role.Role;
+
+                                <MudBadge Content="@($"{assignedCount}/{role.Count}")" Color="@(isCompleted ? Color.Success : Color.Error)" Overlap="true">
+                                    <MudChip T="Role"
+                                             Color="@(isSelected ? GetFactionColor(role.Faction) : Color.Default)"
+                                             Variant="@(isSelected ? Variant.Filled : Variant.Outlined)"
+                                             OnClick="@(() => activeRole = role.Role)"
+                                             Size="Size.Large"
+                                             Class="px-4">
+                                        <b>@role.Name</b>
+                                    </MudChip>
+                                </MudBadge>
+                            }
+                        </div>
+                    </div>
+                    <MudDivider Class="my-3"/>
+                }
+                
+                <MudButton Variant="Variant.Filled" Color="Color.Surface" FullWidth="true" Class="mt-2 py-3" OnClick="AutoFillVillagers">
+                    <MudIcon Icon="@Icons.Material.Filled.FlashOn" Class="mr-2"/> 剩餘空位一鍵填入平民
+                </MudButton>
+            </MudCard>
+        </MudItem>
+
+        @* 右側/下方：座位畫布 *@
+        <MudItem xs="12" md="7" lg="8">
+            <MudText Typo="Typo.h6" Class="mb-3">
+                <MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1"/> <b>步驟 2：點擊座位發放</b>
+            </MudText>
+            <MudGrid Spacing="3">
+                @foreach (var player in GameManager.Players)
+                {
+                    <MudItem xs="6" sm="4" md="4" lg="3">
+                        <MudCard Elevation="@(activeRole.HasValue ? 4 : 1)" 
+                                 Class="@($"pa-4 text-center cursor-pointer {(player.Role != Role.Unknown ? "" : "mud-theme-dark")}")" 
+                                 Style="@($"border-radius: 12px; height: 120px; border: {(activeRole.HasValue ? "2px dashed var(--mud-palette-primary)" : "none")}; transition: 0.2s;")"
+                                 OnClick="@(() => AssignRoleToSeat(player))">
+                            
+                            <MudAvatar Color="@(player.Role != Role.Unknown ? GetFactionColor(player.Faction) : Color.Surface)" Variant="Variant.Filled" Size="Size.Large" Class="mx-auto mb-2 shadow-sm">
+                                <b style="font-size: 1.2rem;">@player.SeatNumber</b>
+                            </MudAvatar>
+                            
+                            @if (player.Role == Role.Unknown)
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Surface" Class="mud-text-secondary mt-1">空座位</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@player.RoleName</MudText>
+                            }
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
-@* 角色百科對話框 *@
+@* 百科對話框 (保留原樣) *@
 <MudDialog @bind-Visible="isEncyclopediaOpen" Options="new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true }">
     <TitleContent>
-        <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.MenuBook" Class="mr-2 mb-n1"/> 角色技能百科
-        </MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.MenuBook" Class="mr-2 mb-n1"/> 角色技能百科</MudText>
     </TitleContent>
     <DialogContent>
         <MudExpansionPanels MultiExpansion="true" Elevation="0">
             @foreach (var role in GameDictionary.GetAllRoles())
             {
-                <MudExpansionPanel Text="@role.Name" 
-                                   Style="@(role.Faction == "好人" ? "color: var(--mud-palette-info);" : role.Faction == "狼人" ? "color: var(--mud-palette-error);" : "color: var(--mud-palette-success);")">
+                <MudExpansionPanel Text="@role.Name" Style="@(role.Faction == "好人" ? "color: var(--mud-palette-info);" : role.Faction == "狼人" ? "color: var(--mud-palette-error);" : "color: var(--mud-palette-success);")">
                     <MudText Typo="Typo.body2" Class="mb-2"><b>技能：</b>@role.Description</MudText>
                     <MudText Typo="Typo.body2" Color="Color.Success" Class="mb-1"><b>優點：</b>@role.Advantage</MudText>
                     <MudText Typo="Typo.body2" Color="Color.Error"><b>缺點：</b>@role.Disadvantage</MudText>
@@ -110,6 +148,9 @@
 
 @code {
     private bool isEncyclopediaOpen = false;
+    
+    // 目前法官手中拿著的「印章」身分
+    private Role? activeRole = null;
 
     protected override void OnInitialized()
     {
@@ -125,25 +166,69 @@
         }
     }
 
-    private void OpenEncyclopedia()
+    // 將所有角色依照第一晚睜眼順序分組
+    private List<PhaseGroup> GetPhases()
     {
-        isEncyclopediaOpen = true;
+        var rolesInPlay = GameManager.CurrentSetup.Roles.Where(r => r.Count > 0).ToList();
+        return new List<PhaseGroup>
+        {
+            new PhaseGroup { 
+                Name = "【第一階段】第三方 / 優先睜眼", 
+                Roles = rolesInPlay.Where(r => r.Role == Role.Thief || r.Role == Role.WildChild || r.Role == Role.Cupid).ToList() 
+            },
+            new PhaseGroup { 
+                Name = "【第二階段】狼人陣營 (先點狼人，再蓋特殊狼)", 
+                Roles = rolesInPlay.Where(r => r.Faction == "狼人").OrderBy(r => r.Role == Role.Werewolf ? 0 : 1).ToList() 
+            },
+            new PhaseGroup { 
+                Name = "【第三階段】神職陣營", 
+                Roles = rolesInPlay.Where(r => r.Faction == "神職").ToList() 
+            },
+            new PhaseGroup { 
+                Name = "【第四階段】平民陣營", 
+                Roles = rolesInPlay.Where(r => r.Faction == "平民").ToList() 
+            }
+        };
     }
 
-    private void OnRoleAssigned(Player player, Role selectedRole)
+    private class PhaseGroup
     {
-        player.Role = selectedRole;
-        
-        var setupRole = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == selectedRole);
-        if (setupRole != null)
+        public string Name { get; set; } = "";
+        public List<RoleItem> Roles { get; set; } = new();
+    }
+
+    // 取得該身分目前已經派發了幾個人
+    private int GetAssignedCount(Role role)
+    {
+        return GameManager.Players.Count(p => p.Role == role);
+    }
+
+    // 將選取的印章蓋到座位上
+    private void AssignRoleToSeat(Player player)
+    {
+        if (activeRole.HasValue)
         {
-            player.RoleName = setupRole.Name;
-            player.Faction = setupRole.Faction;
+            var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == activeRole.Value);
+            if (roleInfo != null)
+            {
+                player.Role = activeRole.Value;
+                player.RoleName = roleInfo.Name;
+                player.Faction = roleInfo.Faction;
+            }
         }
-        else
+    }
+
+    // 懶人救星：把剩下還沒發完的平民，全部填入剩下的空座位
+    private void AutoFillVillagers()
+    {
+        var villagerInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == Role.Villager);
+        if (villagerInfo == null) return;
+
+        foreach (var p in GameManager.Players.Where(p => p.Role == Role.Unknown))
         {
-            player.RoleName = "未知身分";
-            player.Faction = "未知";
+            p.Role = Role.Villager;
+            p.RoleName = villagerInfo.Name;
+            p.Faction = villagerInfo.Faction;
         }
     }
 
@@ -159,6 +244,8 @@
         };
     }
 
+    private void OpenEncyclopedia() => isEncyclopediaOpen = true;
+    
     private void EndGame()
     {
         GameManager.Players.Clear();
