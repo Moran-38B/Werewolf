@@ -1,15 +1,33 @@
+using System.Collections.Generic;
+using System.Linq;
 using Werewolf.Models;
 
 namespace Werewolf.Services
 {
     public class GameManager
     {
-        // 儲存當局的遊戲規則 (屠城/屠邊等)
         public GameRule GlobalRule { get; set; } = new();
-
-        // 儲存當局的角色配置名單
         public RoleSetup CurrentSetup { get; set; } = new();
         
-        // 之後還可以在這裡擴充：遊戲當前天數、存活玩家列表等全域狀態
+        public List<Player> Players { get; set; } = new();
+
+        // 產生給法官登記的空座位
+        public void InitializeGame()
+        {
+            Players.Clear();
+            
+            // 算出首頁設定的總人數
+            int totalPlayers = CurrentSetup.Roles.Sum(r => r.Count);
+            
+            for (int i = 1; i <= totalPlayers; i++)
+            {
+                Players.Add(new Player
+                {
+                    SeatNumber = i,
+                    RoleName = "未知身分",
+                    Faction = "未知"
+                });
+            }
+        }
     }
 }
