@@ -33,7 +33,7 @@
                     {
                         var index = i; // 必須用區域變數捕捉，否則 Blazor 綁定會出錯
                         <MudItem xs="6" sm="4" md="3">
-                            <MudSelect T="string" Label=$"底牌 {index + 1}" Value="@GameManager.BottomCards[index]" ValueChanged="@((string name) => GameManager.BottomCards[index] = name)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+                            <MudSelect T="string" Label="@($"底牌 {index + 1}")" Value="@GameManager.BottomCards[index]" ValueChanged="@((string name) => GameManager.BottomCards[index] = name)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
                                 <MudSelectItem Value="@("未知身分")">未知身分</MudSelectItem>
                                 @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
                                 {
