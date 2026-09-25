@@ -5,6 +5,33 @@
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
+    @* 盜賊專屬：底牌登記區 *@
+    @if (GameManager.HasThief)
+    {
+        <MudItem xs="12" Class="mb-4">
+            <MudCard Elevation="2" Class="pa-4" Style="background-color: var(--mud-palette-background-grey);">
+                <MudText Typo="Typo.h6" Color="Color.Secondary" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Visibility" Class="mr-2 mb-n1"/> 盜賊底牌區
+                </MudText>
+                <MudGrid>
+                    @for (int i = 0; i < 2; i++)
+                    {
+                        var index = i; // 必須用區域變數捕捉，否則 Blazor 綁定會出錯
+                        <MudItem xs="6" sm="4" md="3">
+                            <MudSelect T="string" Label=$"底牌 {index + 1}" Value="@GameManager.BottomCards[index]" ValueChanged="@((string name) => GameManager.BottomCards[index] = name)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+                                <MudSelectItem Value="@("未知身分")">未知身分</MudSelectItem>
+                                @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
+                                {
+                                    <MudSelectItem Value="@role.Name">@role.Name</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCard>
+        </MudItem>
+    }
+
     @* 頂部資訊列 *@
     <MudItem xs="12" Class="mb-4 d-flex justify-space-between align-center">
         <MudText Typo="Typo.h4" Color="Color.Primary">
