@@ -136,8 +136,12 @@
     private RoleSetup CustomSetup = new() { SetupName = "自訂配置", Roles = GameConfigurator.GetBaseRoles() };
     private GameRule GlobalRule = new(); // 獨立的遊戲規則設定
 
-    // 動態計算總人數
-    public int TotalPlayers => CurrentSetup?.Roles?.Sum(r => r.Count) ?? 0;
+
+    // 判斷配置中是否有盜賊
+    public bool HasThief => CurrentSetup?.Roles?.Any(r => r.Name == "盜賊" && r.Count > 0) ?? false;
+
+    // 動態計算總人數：如果有盜賊，實際座位數 = 總牌數 - 2
+    public int TotalPlayers => (CurrentSetup?.Roles?.Sum(r => r.Count) ?? 0) - (HasThief ? 2 : 0);
 
     private bool isSettingsOpen = false;
     private DialogOptions dialogOptions = new() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
