@@ -282,4 +282,20 @@ namespace Werewolf.Models
             return setups;
         }
     }
+
+    public class GameRule
+    {
+        public bool IsKillSide { get; set; } = true; // true = 屠邊, false = 屠城
+        public bool WitchCanSaveSelf { get; set; } = false; // 女巫首夜能否自救
+        public bool DoubleDeadValid { get; set; } = false; // 是否允許同守同救 (通常是同守同救會失效)
+    }
+
+    // 在現有的 RoleSetup 類別中加入 Rule 屬性
+    public class RoleSetup
+    {
+        public string SetupName { get; set; } = "自訂配置";
+        public List<RoleItem> Roles { get; set; } = new();
+        public GameRule Rule { get; set; } = new(); // 新增這一行
+    }
+
 }
