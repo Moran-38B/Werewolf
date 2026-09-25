@@ -11,30 +11,32 @@
             </MudText>
         </MudItem>
 
-        @* 推薦配置選單 *@
-        <MudItem xs="12" md="7" lg="8">
-            <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
-                @foreach (var setup in Recommendations)
-                {
-                    <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
-                }
-                <MudSelectItem Value="@CustomSetup">自訂配置</MudSelectItem>
-            </MudSelect>
-        </MudItem>
-
-        @* 右上角的操作按鈕 (加入 flex-column flex-sm-row 與 gap-3 解決手機重疊問題) *@
-        <MudItem xs="12" md="5" lg="4" Class="d-flex flex-column flex-sm-row gap-3">
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="flex-grow-1" Style="height: 56px;">
-                遊戲規則
-            </MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Class="flex-grow-1" Style="height: 56px;">
-                產生座位
-            </MudButton>
-        </MudItem>
-
+        @* 推薦配置與操作按鈕 (整合為一個 Flex 容器，確保橫向完美對齊) *@
         <MudItem xs="12">
-            <MudDivider Class="my-2" />
+            <div class="d-flex flex-column flex-md-row gap-4 align-start">
+                
+                @* 左側：推薦配置下拉選單 *@
+                <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="flex-grow-1">
+                    @foreach (var setup in Recommendations)
+                    {
+                        <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
+                    }
+                    <MudSelectItem Value="@CustomSetup">自訂配置</MudSelectItem>
+                </MudSelect>
+
+                @* 右側：操作按鈕 (設定與選單輸入框相同高度 56px) *@
+                <div class="d-flex gap-3 flex-shrink-0">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px; min-width: 120px;">
+                        遊戲規則
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 56px; min-width: 140px;">
+                        產生座位
+                    </MudButton>
+                </div>
+
+            </div>
         </MudItem>
+
 
         @* 左側區塊：狼人陣營與平民陣營 (分成兩張獨立的卡片) *@
         <MudItem xs="12" md="5">
