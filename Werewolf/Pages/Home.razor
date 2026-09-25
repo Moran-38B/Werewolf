@@ -37,40 +37,43 @@
             </div>
         </MudItem>
 
+        @* 左半部：平民與狼人 (分開為上下兩張卡片) *@
+        <MudItem xs="12" md="6">
+            <div class="d-flex flex-column gap-4 h-100">
+                
+                @* 1. 平民陣營區塊 *@
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-3">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-2 mb-n1"/> 平民陣營
+                    </MudText>
+                    <MudGrid>
+                        @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "平民"))
+                        {
+                            <MudItem xs="6" sm="4">
+                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
+                                                 Variant="Variant.Outlined" Margin="Margin.Dense" inputmode="none" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudCard>
 
-        @* 左側區塊：狼人陣營與平民陣營 (分成兩張獨立的卡片) *@
-        <MudItem xs="12" md="5">
-            <MudGrid>
-                @* 狼人陣營 *@
-                <MudItem xs="12">
-                    <MudCard Elevation="2" Class="pa-4">
-                        <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">狼人陣營</MudText>
-                        <MudGrid>
-                            @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
-                            {
-                                <MudItem xs="6">
-                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
-                                </MudItem>
-                            }
-                        </MudGrid>
-                    </MudCard>
-                </MudItem>
+                @* 2. 狼人陣營區塊 *@
+                <MudCard Elevation="2" Class="pa-4 flex-grow-1">
+                    <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-3">
+                        <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" Class="mr-2 mb-n1"/> 狼人陣營
+                    </MudText>
+                    <MudGrid>
+                        @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
+                        {
+                            <MudItem xs="6" sm="4">
+                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
+                                                 Variant="Variant.Outlined" Margin="Margin.Dense" inputmode="none" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudCard>
 
-                @* 平民陣營 *@
-                <MudItem xs="12">
-                    <MudCard Elevation="2" Class="pa-4">
-                        <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-2">平民陣營</MudText>
-                        <MudGrid>
-                            @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "平民"))
-                            {
-                                <MudItem xs="6">
-                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Text" />
-                                </MudItem>
-                            }
-                        </MudGrid>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
+            </div>
         </MudItem>
 
         @* 右側區塊：神職與第三方陣營 *@
