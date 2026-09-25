@@ -127,23 +127,23 @@ namespace Werewolf.Models
             SetRoleCount(_10_2, Role.Villager, 4);
             setups.Add(_10_2);
 
-            var standard12 = new RoleSetup { SetupName = "12 人 標準場 - 4狼+4神(預言家+女巫+獵人+白癡)+4民", Roles = GetBaseRoles() };
-            SetRoleCount(standard12, Role.Werewolf, 4);
-            SetRoleCount(standard12, Role.Villager, 4);
-            SetRoleCount(standard12, Role.Seer, 1);
-            SetRoleCount(standard12, Role.Witch, 1);
-            SetRoleCount(standard12, Role.Hunter, 1);
-            SetRoleCount(standard12, Role.Idiot, 1);
-            setups.Add(standard12);
+            var _12_1 = new RoleSetup { SetupName = "12 人 標準場 - 4狼+4神(預言家+女巫+獵人+白癡)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_1, Role.Werewolf, 4);
+            SetRoleCount(_12_1, Role.Villager, 4);
+            SetRoleCount(_12_1, Role.Seer, 1);
+            SetRoleCount(_12_1, Role.Witch, 1);
+            SetRoleCount(_12_1, Role.Hunter, 1);
+            SetRoleCount(_12_1, Role.Idiot, 1);
+            setups.Add(_12_1);
 
-            var wolfBeauty12 = new RoleSetup { SetupName = "12 人 邱比特場 - 4狼+4神(預言家+女巫+獵人+邱比特)+4民", Roles = GetBaseRoles() };
-            SetRoleCount(wolfBeauty12, Role.Werewolf, 4);
-            SetRoleCount(wolfBeauty12, Role.Villager, 4);
-            SetRoleCount(wolfBeauty12, Role.Seer, 1);
-            SetRoleCount(wolfBeauty12, Role.Witch, 1);
-            SetRoleCount(wolfBeauty12, Role.Hunter, 1);
-            SetRoleCount(wolfBeauty12, Role.Cupid, 1);
-            setups.Add(wolfBeauty12);
+            var _12_2 = new RoleSetup { SetupName = "12 人 邱比特場 - 4狼+4神(預言家+女巫+獵人+邱比特)+4民", Roles = GetBaseRoles() };
+            SetRoleCount(_12_2, Role.Werewolf, 4);
+            SetRoleCount(_12_2, Role.Villager, 4);
+            SetRoleCount(_12_2, Role.Seer, 1);
+            SetRoleCount(_12_2, Role.Witch, 1);
+            SetRoleCount(_12_2, Role.Hunter, 1);
+            SetRoleCount(_12_2, Role.Cupid, 1);
+            setups.Add(_12_2);
 
             var _12_3 = new RoleSetup { SetupName = "12 人 禁言長老 - 4狼+4神(預言家+女巫+禁言長老+騎士)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_3, Role.Werewolf, 4);
@@ -277,25 +277,7 @@ namespace Werewolf.Models
             SetRoleCount(_12_15, Role.Thief, 1);
             setups.Add(_12_15);
 
-
-
             return setups;
         }
     }
-
-    public class GameRule
-    {
-        public bool IsKillSide { get; set; } = true; // true = 屠邊, false = 屠城
-        public bool WitchCanSaveSelf { get; set; } = false; // 女巫首夜能否自救
-        public bool DoubleDeadValid { get; set; } = false; // 是否允許同守同救 (通常是同守同救會失效)
-    }
-
-    // 在現有的 RoleSetup 類別中加入 Rule 屬性
-    public class RoleSetup
-    {
-        public string SetupName { get; set; } = "自訂配置";
-        public List<RoleItem> Roles { get; set; } = new();
-        public GameRule Rule { get; set; } = new(); // 新增這一行
-    }
-
 }
