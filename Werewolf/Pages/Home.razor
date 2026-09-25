@@ -1,6 +1,8 @@
 @page "/"
 @using Werewolf.Models
+@using Werewolf.Services
 @inject NavigationManager NavigationManager
+@inject GameManager GameManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
     <MudGrid>
@@ -172,7 +174,13 @@
 
     private void StartGame()
     {
-        // TODO: 建立 GameManager 後，將設定寫入並導航
+        // 1. 將獨立設定的規則存入大腦
+        GameManager.GlobalRule = this.GlobalRule;
+
+        // 2. 將畫面上的配置與人數存入大腦 (可以做個深度複製避免連動，但簡單起見直接賦值)
+        GameManager.CurrentSetup = this.CurrentSetup;
+
+        // 3. 導航到法官控制台
         NavigationManager.NavigateTo("/game");
-    }
+		}
 }
