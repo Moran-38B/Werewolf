@@ -3,25 +3,18 @@
 @inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
     <MudGrid>
-        @* 頂部資訊與操作區 *@
-        <MudItem xs="12" Class="d-flex justify-space-between align-center mb-4">
+        @* 頂部標題與總人數 *@
+        <MudItem xs="12" Class="d-flex justify-space-between align-center mb-2">
             <MudText Typo="Typo.h4" Color="Color.Primary">
                 <b>建立遊戲</b> (目前 @TotalPlayers 人)
             </MudText>
-            <div>
-                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="mr-2">
-                    遊戲規則
-                </MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="StartGame">
-                    產生座位表
-                </MudButton>
-            </div>
         </MudItem>
 
-        @* 版子推薦選擇 *@
-        <MudItem xs="12" md="4">
-            <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+        @* 推薦配置選單 (設定為 xs="12" md="8"，讓它在 iPad 橫向佔據大部分空間) *@
+        <MudItem xs="12" md="8">
+            <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
                 @foreach (var setup in Recommendations)
                 {
                     <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
@@ -30,11 +23,21 @@
             </MudSelect>
         </MudItem>
 
+        @* 右上角的操作按鈕 (設定為 xs="12" md="4"，與選單並排) *@
+        <MudItem xs="12" md="4" Class="d-flex justify-end align-center">
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Class="mr-3 flex-grow-1" Style="height: 56px;">
+                規則
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Class="flex-grow-1" Style="height: 56px;">
+                產生座位
+            </MudButton>
+        </MudItem>
+
         <MudItem xs="12">
             <MudDivider Class="my-4" />
         </MudItem>
 
-        @* 狼人與平民 (數值調整) *@
+        @* 下方的狼人/平民與神職配置區塊 (維持 6 : 6 比例) *@
         <MudItem xs="12" md="6">
             <MudCard Elevation="2" Class="pa-4 h-100">
                 <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-4">狼人與平民陣營 (數量)</MudText>
@@ -49,14 +52,13 @@
             </MudCard>
         </MudItem>
 
-        @* 神職與第三方 (勾選調整) *@
         <MudItem xs="12" md="6">
             <MudCard Elevation="2" Class="pa-4 h-100">
                 <MudText Typo="Typo.h6" Color="Color.Warning" Class="mb-4">神職與第三方陣營 (勾選)</MudText>
                 <MudGrid>
                     @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "神職" || r.Faction == "第三方"))
                     {
-                        <MudItem xs="4">
+                        <MudItem xs="6" sm="4">
                             <MudCheckBox T="bool" 
                                          Value="@(role.Count > 0)" 
                                          ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))" 
@@ -68,6 +70,8 @@
             </MudCard>
         </MudItem>
     </MudGrid>
+</MudContainer>
+
 </MudContainer>
 
 @* 遊戲規則設定對話框 *@
