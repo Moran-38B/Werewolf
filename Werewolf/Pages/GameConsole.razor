@@ -1,262 +1,109 @@
 @page "/game"
 @using Werewolf.Models
+@using Werewolf.Services
+@inject GameManager GameManager
+@inject NavigationManager NavigationManager
 
-<MudGrid Class="mt-2 pl-4 pr-4">
-    @* 左側：法官提詞機與操作控制台 *@
-    <MudItem xs="12" md="4">
-        <MudCard Elevation="4" Style="background-color: #2a2a35; border-radius: 12px; height: 100%;">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h5" Color="Color.Primary"><b>第 @CurrentNight.Day 天 夜晚</b></MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 pb-8">
+    @* 頂部資訊列 *@
+    <MudItem xs="12" Class="mb-4 d-flex justify-space-between align-center">
+        <MudText Typo="Typo.h4" Color="Color.Primary">
+            <b>法官登記板</b> (@GameManager.Players.Count 人局)
+        </MudText>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.ExitToApp" OnClick="EndGame">
+            重新設定
+        </MudButton>
+    </MudItem>
 
-                @switch (CurrentPhase)
-                {
-                    case GamePhase.WerewolfTurn:
-                        <MudText Typo="Typo.h6" Class="mb-4">「天黑請閉眼，狼人請睜眼。」</MudText>
-                        <MudText Color="Color.Warning" Class="mb-2">1. 請點擊右側座位綁定狼人玩家 (@Players.Count(p => p.Role == Role.Werewolf) 隻)</MudText>
-                        <MudText Color="Color.Error" Class="mb-4">2. 請點擊座位指定擊殺目標：<b>@(CurrentNight.WolfKillTarget?.ToString() ?? "尚未選擇")</b></MudText>
-                        break;
-
-                    case GamePhase.WitchTurn:
-                        <MudText Typo="Typo.h6" Class="mb-4">「狼人請閉眼，女巫請睜眼。」</MudText>
-                        <MudText Color="Color.Warning" Class="mb-2">1. 請點擊綁定女巫座位</MudText>
-                        <MudText Class="mb-2">昨晚倒牌的是：<b class="mud-error-text">@(CurrentNight.WolfKillTarget?.ToString() ?? "平安夜")</b> 號</MudText>
-
-                        <div class="d-flex gap-2 mb-4 mt-4">
-                            <MudButton Variant="@(CurrentNight.IsHealUsed? Variant.Filled: Variant.Outlined)" Color="Color.Success" OnClick="UseHeal">
-                                使用解藥
-                            </MudButton>
-                            <MudButton Variant="@(CurrentNight.WitchPoisonTarget.HasValue? Variant.Filled: Variant.Outlined)" Color="Color.Error">
-                                使用毒藥 (點擊座位)
-                            </MudButton>
-                        </div>
-                        break;
-
-                    case GamePhase.SeerTurn:
-                        <MudText Typo="Typo.h6" Class="mb-4">「女巫請閉眼，預言家請睜眼。」</MudText>
-                        <MudText Color="Color.Warning" Class="mb-2">1. 請點擊綁定預言家座位</MudText>
-                        <MudText Class="mb-4">2. 請點選要查驗的對象：<b>@(CurrentNight.SeerCheckTarget?.ToString() ?? "尚未選擇")</b></MudText>
-
-                        @if (CurrentNight.SeerCheckTarget.HasValue)
+    @* 座位網格 (使用 MudSelect 讓法官手動選身分) *@
+    <MudGrid Spacing="3">
+        @foreach (var player in GameManager.Players)
+        {
+            <MudItem xs="6" sm="4" md="3" lg="2">
+                <MudCard Elevation="3" Class="pa-4" Style="border-radius: 12px; height: 100%;">
+                    
+                    @* 座位號碼與警徽標示 *@
+                    <div class="d-flex justify-space-between align-center mb-2">
+                        <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium">
+                            <b>@player.SeatNumber</b>
+                        </MudAvatar>
+                        
+                        @if (player.HasBadge)
                         {
-                            var targetPlayer = Players.FirstOrDefault(p => p.SeatNumber == CurrentNight.SeerCheckTarget);
-                            var isGood = targetPlayer?.Role != Role.Werewolf;
-                            <MudAlert Severity="@(isGood? Severity.Success: Severity.Error)" Class="mt-2">
-                                查驗結果：@(isGood ? "好人 (大拇指朝上)" : "狼人 (大拇指朝下)")
-                            </MudAlert>
+                            <MudIcon Icon="@Icons.Material.Filled.LocalPolice" Color="Color.Warning" />
                         }
-                        break;
-                }
+                    </div>
+                    
+                    @* 讓法官選擇該座位的真實身分 *@
+                    <MudSelect T="string" Label="設定身分" Value="@player.RoleName" ValueChanged="@((string name) => OnRoleAssigned(player, name))" Variant="Variant.Text" Margin="Margin.Dense" Class="mt-2">
+                        <MudSelectItem Value="@("未知身分")">未知身分</MudSelectItem>
+                        @* 只列出首頁有設定數量的角色 *@
+                        @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
+                        {
+                            <MudSelectItem Value="@role.Name">@role.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    
+                    @* 顯示該角色的所屬陣營 *@
+                    @if (player.RoleName != "未知身分")
+                    {
+                        <MudText Typo="Typo.caption" Color="@GetFactionColor(player.Faction)" Class="d-block mt-2 text-center">
+                            @player.Faction
+                        </MudText>
+                    }
 
-            </MudCardContent>
-
-            <MudCardActions Class="d-flex justify-end pa-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="NextPhase">
-                    下一步
-                </MudButton>
-            </MudCardActions>
-        </MudCard>
-    </MudItem>
-
-    @* 右側：座位網格 *@
-    <MudItem xs="12" md="8">
-        <MudGrid Spacing="2">
-            @foreach (var player in Players)
-            {
-                <MudItem xs="4" sm="3" md="3">
-                    <MudCard Elevation="2" Class="@GetCardClass(player)" Style="border-radius: 12px; cursor: pointer;"
-                             @onclick="() => OnSeatClicked(player)">
-                        <MudCardHeader Class="pa-2 pb-0">
-                            <MudAvatar Color="@(player.IsAlive? Color.Primary: Color.Default)" Size="Size.Small">
-                                <b>@player.SeatNumber</b>
-                            </MudAvatar>
-                        </MudCardHeader>
-                        <MudCardContent Class="pa-2 text-center">
-                            <MudText Typo="Typo.subtitle1">
-                                <b>@(player.Role == Role.Unknown ? "?" : GetRoleName(player.Role))</b>
-                            </MudText>
-
-                            @if (CurrentPhase == GamePhase.WerewolfTurn && CurrentNight.WolfKillTarget == player.SeatNumber)
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.CrisisAlert" Color="Color.Error" />
-                            }
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-            }
-        </MudGrid>
-    </MudItem>
-</MudGrid>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
 
 @code {
-    private List<Player> Players = new();
-    private NightRecord CurrentNight = new NightRecord();
-    private GamePhase CurrentPhase = GamePhase.WerewolfTurn;
-    private bool IsBindingRole = true;
-
     protected override void OnInitialized()
     {
-        for (int i = 1; i <= 12; i++)
+        if (GameManager.CurrentSetup.Roles.Sum(r => r.Count) == 0)
         {
-            Players.Add(new Player { SeatNumber = i, Role = Role.Unknown, IsAlive = true });
+            NavigationManager.NavigateTo("/");
+            return;
         }
-				StartNight();
+
+        if (GameManager.Players.Count == 0)
+        {
+            GameManager.InitializeGame();
+        }
     }
 
-		private void StartNight()
-		{
-    		var allPhases = (GamePhase[])Enum.GetValues(typeof(GamePhase));
-    
-    		foreach (var phase in allPhases)
-    		{
-        		if (IsPhaseRequired(phase))
-        		{
-        		    CurrentPhase = phase;
-      		      break;
-    		    }
-  		  }
-		}
-
-
-		// 檢查特定階段在「當前夜晚」是否需要執行
-		private bool IsPhaseRequired(GamePhase phase)
-		{
-    		// 天亮結算一定是必要階段
-    		if (phase == GamePhase.DayTime) return true;
-
-    		// 1. 首夜限定階段 (只有 Day 1 才會執行)
-    		if (CurrentNight.Day == 1)
-    		{
-        		switch (phase)
-        		{
-            		case GamePhase.ThiefTurn:
-                		return Players.Any(p => p.Role == Role.Thief);
-            		case GamePhase.CupidTurn:
-            		case GamePhase.LoversTurn:
-                		return Players.Any(p => p.Role == Role.Cupid);
-            		case GamePhase.WildChildTurn:
-                		return Players.Any(p => p.Role == Role.WildChild);
-        		}
-    		}
-    		else
-    		{
-        		// 非首夜，直接跳過所有首夜限定階段
-        		if (phase is GamePhase.ThiefTurn or GamePhase.CupidTurn or GamePhase.LoversTurn or GamePhase.WildChildTurn)
-            		return false;
-    		}
-
-    		// 2. 常規夜間技能階段 (檢查該角色是否有出場，且通常需存活)
-    		return phase switch
-    		{
-        		// 狼人階段：只要場上有任何活著的狼人陣營角色就要睜眼
-        		GamePhase.WerewolfTurn => Players.Any(p => (p.Role == Role.Werewolf || p.Role == Role.WolfBeauty) && p.IsAlive),
+    // 當法官在下拉選單選擇身分時，自動綁定對應的陣營
+    private void OnRoleAssigned(Player player, string selectedRoleName)
+    {
+        player.RoleName = selectedRoleName;
         
-        		GamePhase.GuardTurn => Players.Any(p => p.Role == Role.Guard && p.IsAlive),
-        		GamePhase.WolfBeautyTurn => Players.Any(p => p.Role == Role.WolfBeauty && p.IsAlive),
-        		GamePhase.GargoyleTurn => Players.Any(p => p.Role == Role.Gargoyle && p.IsAlive),
-        		GamePhase.WitchTurn => Players.Any(p => p.Role == Role.Witch && p.IsAlive),
-        		GamePhase.SeerTurn => Players.Any(p => p.Role == Role.Seer && p.IsAlive),
-        		GamePhase.DemonHunterTurn => Players.Any(p => p.Role == Role.DemonHunter && p.IsAlive),
-        		GamePhase.MagicianTurn => Players.Any(p => p.Role == Role.Magician && p.IsAlive),
-        		GamePhase.SilencerTurn => Players.Any(p => p.Role == Role.Silencer && p.IsAlive),
-        		GamePhase.CrowTurn => Players.Any(p => p.Role == Role.Crow && p.IsAlive),
-        		GamePhase.DreamcatcherTurn => Players.Any(p => p.Role == Role.Dreamcatcher && p.IsAlive),
-        		_ => false
-  			};
-		}
-
-    private void OnSeatClicked(Player player)
-    {
-        switch (CurrentPhase)
+        var setupRole = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Name == selectedRoleName);
+        if (setupRole != null)
         {
-            case GamePhase.WerewolfTurn:
-                if (IsBindingRole)
-                {
-                    player.Role = Role.Werewolf;
-                    // 暫定滿 4 隻狼人後自動切換為刀人模式
-                    if (Players.Count(p => p.Role == Role.Werewolf) >= 4) IsBindingRole = false;
-                }
-                else
-                {
-                    CurrentNight.WolfKillTarget = player.SeatNumber;
-                }
-                break;
-
-            case GamePhase.WitchTurn:
-                // 如果場上還沒有女巫，第一次點擊就是設定女巫座位
-                if (!Players.Any(p => p.Role == Role.Witch))
-                {
-                    player.Role = Role.Witch;
-                }
-                else
-                {
-                    CurrentNight.WitchPoisonTarget = player.SeatNumber;
-                }
-                break;
-
-            case GamePhase.SeerTurn:
-                // 如果場上還沒有預言家，第一次點擊就是設定預言家座位
-                if (!Players.Any(p => p.Role == Role.Seer))
-                {
-                    player.Role = Role.Seer;
-                }
-                else
-                {
-                    CurrentNight.SeerCheckTarget = player.SeatNumber;
-                }
-                break;
+            player.Faction = setupRole.Faction;
+        }
+        else
+        {
+            player.Faction = "未知";
         }
     }
 
-    private void UseHeal()
+    private Color GetFactionColor(string faction)
     {
-        CurrentNight.IsHealUsed = !CurrentNight.IsHealUsed;
+        return faction switch
+        {
+            "平民" => Color.Info,
+            "狼人" => Color.Error,
+            "神職" => Color.Warning,
+            "第三方" => Color.Success,
+            _ => Color.Default
+        };
     }
 
-    private void NextPhase()
-		{
-    		IsBindingRole = true; // 每次切換階段，重置為綁定模式
-    
-    		var allPhases = (GamePhase[])Enum.GetValues(typeof(GamePhase));
-    		int currentIndex = Array.IndexOf(allPhases, CurrentPhase);
-
-    		// 依序檢查下一個階段，直到找到需要執行的階段為止
-    		while (currentIndex < allPhases.Length - 1)
-    		{
-        		currentIndex++;
-        		var candidatePhase = allPhases[currentIndex];
-
-        		if (IsPhaseRequired(candidatePhase))
-        		{
-            		CurrentPhase = candidatePhase;
-            		return;
-   		   		}
- 		   	}
-		
-  		  // 若全部遍歷完畢，進入天亮
-  		  CurrentPhase = GamePhase.DayTime;
-		}
-
-
-    private string GetCardClass(Player player)
+    private void EndGame()
     {
-        var baseClass = "pa-1 transition-all";
-
-        // 綁定期間，把已被點選為狼人的卡片標紅框
-        if (CurrentPhase == GamePhase.WerewolfTurn && player.Role == Role.Werewolf)
-            return $"{baseClass} mud-theme-dark border-solid border-2 mud-border-error";
-
-        return $"{baseClass} mud-theme-dark";
+        GameManager.Players.Clear();
+        NavigationManager.NavigateTo("/");
     }
-
-    private string GetRoleName(Role role) => role switch
-    {
-        Role.Witch => "女巫",
-        Role.Werewolf => "狼人",
-        Role.Seer => "預言家",
-        _ => role.ToString()
-    };
 }
