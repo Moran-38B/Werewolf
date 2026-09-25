@@ -10,14 +10,17 @@ namespace Werewolf.Services
         public RoleSetup CurrentSetup { get; set; } = new();
         
         public List<Player> Players { get; set; } = new();
+        public List<string> BottomCards { get; set; } = new();
 
-        // 產生給法官登記的空座位
+        public bool HasThief => CurrentSetup.Roles.Any(r => r.Name == "盜賊" && r.Count > 0);
+
         public void InitializeGame()
         {
             Players.Clear();
+            BottomCards.Clear();
             
-            // 算出首頁設定的總人數
-            int totalPlayers = CurrentSetup.Roles.Sum(r => r.Count);
+            int totalCards = CurrentSetup.Roles.Sum(r => r.Count);
+            int totalPlayers = HasThief ? totalCards - 2 : totalCards;
             
             for (int i = 1; i <= totalPlayers; i++)
             {
@@ -27,6 +30,12 @@ namespace Werewolf.Services
                     RoleName = "未知身分",
                     Faction = "未知"
                 });
+            }
+
+            if (HasThief)
+            {
+                BottomCards.Add("未知身分");
+                BottomCards.Add("未知身分");
             }
         }
     }
