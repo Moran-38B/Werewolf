@@ -11,34 +11,33 @@
             </MudText>
         </MudItem>
 
-        @* 推薦配置與操作按鈕 (使用 MudGrid 並設定 AlignItems.End 讓它們底部對齊) *@
+        @* 推薦配置與操作按鈕 (改用 MudGrid 精準控制寬度與對齊) *@
         <MudItem xs="12">
-            <div class="d-flex flex-column flex-md-row gap-4 align-start">
+            <MudGrid Spacing="3">
                 
-                @* 左側：推薦配置下拉選單 *@
-                <div class="flex-grow-1 w-100">
-                    <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
+                @* 左側：推薦配置下拉選單 (佔據大比例空間 md="8" lg="9"，填滿空白) *@
+                <MudItem xs="12" md="8" lg="9">
+                    <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true" Class="mb-0">
                         @foreach (var setup in Recommendations)
                         {
                             <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
                         }
                         <MudSelectItem Value="@CustomSetup">自訂配置</MudSelectItem>
                     </MudSelect>
-                </div>
+                </MudItem>
 
-                @* 右側：操作按鈕 (限制高度為 56px 與選單外框一致) *@
-                <div class="d-flex gap-3 flex-shrink-0 w-100 w-md-auto" style="height: 56px;">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 100%; min-width: 120px;" Class="flex-grow-1 flex-md-grow-0">
+                @* 右側：操作按鈕 (加入 mt-md-2 將按鈕微幅向下推，完美切齊左側的輸入外框) *@
+                <MudItem xs="12" md="4" lg="3" Class="d-flex gap-3 mt-md-2">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px;" Class="flex-grow-1">
                         遊戲規則
                     </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 100%; min-width: 140px;" Class="flex-grow-1 flex-md-grow-0">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 56px;" Class="flex-grow-1">
                         產生座位
                     </MudButton>
-                </div>
-
-            </div>
+                </MudItem>
+                
+            </MudGrid>
         </MudItem>
-
 
         <MudItem xs="12">
             <MudDivider Class="my-2" />
