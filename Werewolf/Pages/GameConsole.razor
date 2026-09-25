@@ -1,4 +1,4 @@
-﻿@page "/game"
+@page "/game"
 @using Werewolf.Models
 
 <MudGrid Class="mt-2 pl-4 pr-4">
@@ -103,7 +103,70 @@
         {
             Players.Add(new Player { SeatNumber = i, Role = Role.Unknown, IsAlive = true });
         }
+				StartNight();
     }
+
+		private void StartNight()
+		{
+    		var allPhases = (GamePhase[])Enum.GetValues(typeof(GamePhase));
+    
+    		foreach (var phase in allPhases)
+    		{
+        		if (IsPhaseRequired(phase))
+        		{
+        		    CurrentPhase = phase;
+      		      break;
+    		    }
+  		  }
+		}
+
+
+		// 檢查特定階段在「當前夜晚」是否需要執行
+		private bool IsPhaseRequired(GamePhase phase)
+		{
+    		// 天亮結算一定是必要階段
+    		if (phase == GamePhase.DayTime) return true;
+
+    		// 1. 首夜限定階段 (只有 Day 1 才會執行)
+    		if (CurrentNight.Day == 1)
+    		{
+        		switch (phase)
+        		{
+            		case GamePhase.ThiefTurn:
+                		return Players.Any(p => p.Role == Role.Thief);
+            		case GamePhase.CupidTurn:
+            		case GamePhase.LoversTurn:
+                		return Players.Any(p => p.Role == Role.Cupid);
+            		case GamePhase.WildChildTurn:
+                		return Players.Any(p => p.Role == Role.WildChild);
+        		}
+    		}
+    		else
+    		{
+        		// 非首夜，直接跳過所有首夜限定階段
+        		if (phase is GamePhase.ThiefTurn or GamePhase.CupidTurn or GamePhase.LoversTurn or GamePhase.WildChildTurn)
+            		return false;
+    		}
+
+    		// 2. 常規夜間技能階段 (檢查該角色是否有出場，且通常需存活)
+    		return phase switch
+    		{
+        		// 狼人階段：只要場上有任何活著的狼人陣營角色就要睜眼
+        		GamePhase.WerewolfTurn => Players.Any(p => (p.Role == Role.Werewolf || p.Role == Role.WolfBeauty) && p.IsAlive),
+        
+        		GamePhase.GuardTurn => Players.Any(p => p.Role == Role.Guard && p.IsAlive),
+        		GamePhase.WolfBeautyTurn => Players.Any(p => p.Role == Role.WolfBeauty && p.IsAlive),
+        		GamePhase.GargoyleTurn => Players.Any(p => p.Role == Role.Gargoyle && p.IsAlive),
+        		GamePhase.WitchTurn => Players.Any(p => p.Role == Role.Witch && p.IsAlive),
+        		GamePhase.SeerTurn => Players.Any(p => p.Role == Role.Seer && p.IsAlive),
+        		GamePhase.DemonHunterTurn => Players.Any(p => p.Role == Role.DemonHunter && p.IsAlive),
+        		GamePhase.MagicianTurn => Players.Any(p => p.Role == Role.Magician && p.IsAlive),
+        		GamePhase.SilencerTurn => Players.Any(p => p.Role == Role.Silencer && p.IsAlive),
+        		GamePhase.CrowTurn => Players.Any(p => p.Role == Role.Crow && p.IsAlive),
+        		GamePhase.DreamcatcherTurn => Players.Any(p => p.Role == Role.Dreamcatcher && p.IsAlive),
+        		_ => false
+  			};
+		}
 
     private void OnSeatClicked(Player player)
     {
@@ -154,16 +217,29 @@
     }
 
     private void NextPhase()
-    {
-        IsBindingRole = true;
-        CurrentPhase = CurrentPhase switch
-        {
-            GamePhase.WerewolfTurn => GamePhase.WitchTurn,
-            GamePhase.WitchTurn => GamePhase.SeerTurn,
-            GamePhase.SeerTurn => GamePhase.DayTime,
-            _ => GamePhase.WerewolfTurn
-        };
-    }
+		{
+    		IsBindingRole = true; // 每次切換階段，重置為綁定模式
+    
+    		var allPhases = (GamePhase[])Enum.GetValues(typeof(GamePhase));
+    		int currentIndex = Array.IndexOf(allPhases, CurrentPhase);
+
+    		// 依序檢查下一個階段，直到找到需要執行的階段為止
+    		while (currentIndex < allPhases.Length - 1)
+    		{
+        		currentIndex++;
+        		var candidatePhase = allPhases[currentIndex];
+
+        		if (IsPhaseRequired(candidatePhase))
+        		{
+            		CurrentPhase = candidatePhase;
+            		return;
+   		   		}
+ 		   	}
+		
+  		  // 若全部遍歷完畢，進入天亮
+  		  CurrentPhase = GamePhase.DayTime;
+		}
+
 
     private string GetCardClass(Player player)
     {
