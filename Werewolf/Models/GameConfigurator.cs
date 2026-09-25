@@ -236,7 +236,7 @@ namespace Werewolf.Models
 
             var _12_12 = new RoleSetup { SetupName = "12 人 野孩子 - 3狼+野孩子+4神(預言家+女巫+獵人+白痴)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_12, Role.Werewolf, 3);
-            SetRoleCount(_12_12 Role.WildChild, 1);
+            SetRoleCount(_12_12, Role.WildChild, 1);
             SetRoleCount(_12_12, Role.Villager, 4);
             SetRoleCount(_12_12, Role.Seer, 1);
             SetRoleCount(_12_12, Role.Witch, 1);
@@ -246,7 +246,7 @@ namespace Werewolf.Models
 
             var _12_13 = new RoleSetup { SetupName = "12 人 狼美人&騎士/老流氓 - 3狼+狼美人+4神(預言家+女巫+獵人+騎士/老流氓)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_13, Role.Werewolf, 3);
-            SetRoleCount(_12_13 Role.WolfBeauty, 1);
+            SetRoleCount(_12_13, Role.WolfBeauty, 1);
             SetRoleCount(_12_13, Role.Villager, 4);
             SetRoleCount(_12_13, Role.Seer, 1);
             SetRoleCount(_12_13, Role.Witch, 1);
@@ -257,7 +257,7 @@ namespace Werewolf.Models
 
             var _12_14 = new RoleSetup { SetupName = "12 人 惡靈騎士&守衛 - 3狼+惡靈騎士+4神(預言家+女巫+獵人+守衛)+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_14, Role.Werewolf, 3);
-            SetRoleCount(_12_14 Role.GhostRider, 1);
+            SetRoleCount(_12_14, Role.GhostRider, 1);
             SetRoleCount(_12_14, Role.Villager, 4);
             SetRoleCount(_12_14, Role.Seer, 1);
             SetRoleCount(_12_14, Role.Witch, 1);
@@ -267,7 +267,7 @@ namespace Werewolf.Models
 
             var _12_15 = new RoleSetup { SetupName = "12 人 狼王&邱比特/盜賊 - 2狼+狼王+4神(預言家+女巫+獵人+白痴)+邱比特/盜賊+4民", Roles = GetBaseRoles() };
             SetRoleCount(_12_15, Role.Werewolf, 2);
-            SetRoleCount(_12_15 Role.WolfKing, 1);
+            SetRoleCount(_12_15, Role.WolfKing, 1);
             SetRoleCount(_12_15, Role.Villager, 4);
             SetRoleCount(_12_15, Role.Seer, 1);
             SetRoleCount(_12_15, Role.Witch, 1);
