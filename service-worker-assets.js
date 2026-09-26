@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "OLPdzVn5",
+  "version": "9bDL57pn",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-pLE/QYx4WqD5sXC4/ePu5+SttYj4kPn1IvZQuNm4XmQ=",
-      "url": "_framework/Werewolf.otj02ubv6e.wasm"
+      "hash": "sha256-QeRHhFZm2Nft3gQT0KXkC4uSeqa9cpJl9eLXjxycjzo=",
+      "url": "_framework/Werewolf.bd27cic1le.wasm"
     },
     {
-      "hash": "sha256-RVQPqGeRHau1K4+BkPVYdl7moNFtv0fq8bMHnVitGJo=",
+      "hash": "sha256-BupZ0fdl/9K9LMU7nZYi8ICBsYStEKEitGOQ8536fWs=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -236,14 +236,6 @@ self.assetsManifest = {
     {
       "hash": "sha256-6BvbE0buNqFOognfzqe6MtF0gJ/Hzi+mhzeaDNxxY1Y=",
       "url": "images/roles/Hunter.png"
-    },
-    {
-      "hash": "sha256-WuUVpH9tnKpCw28zrEplU4SwImFtHnCj7od23OPQoyU=",
-      "url": "images/roles/IMG_0037.png"
-    },
-    {
-      "hash": "sha256-nwZDl5Y3NjLZtm0SbJeHz0SZuY1sQHFPTso4DiqDwa8=",
-      "url": "images/roles/IMG_0038.png"
     },
     {
       "hash": "sha256-5AMuzYVzhhDok+dtfQLyztuq98DFsyX7Siuf94FhCC0=",
@@ -338,8 +330,16 @@ self.assetsManifest = {
       "url": "images/roles/Villager.png"
     },
     {
+      "hash": "sha256-WuUVpH9tnKpCw28zrEplU4SwImFtHnCj7od23OPQoyU=",
+      "url": "images/roles/Werewolf.png"
+    },
+    {
       "hash": "sha256-YLnkt1GxyXohPNw0mGlHls8qWhtfaogxnSREaBg2Flw=",
       "url": "images/roles/Witch.png"
+    },
+    {
+      "hash": "sha256-nwZDl5Y3NjLZtm0SbJeHz0SZuY1sQHFPTso4DiqDwa8=",
+      "url": "images/roles/WolfKing.png"
     },
     {
       "hash": "sha256-BAioGeuC3KUBLMxSLFFnizEDKurf7KGzBRH5qmlF1fI=",
