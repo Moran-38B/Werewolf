@@ -219,7 +219,8 @@
         <MudExpansionPanels MultiExpansion="true" Elevation="0">
             @foreach (var role in GameManager.CurrentSetup.Roles.Where(r => r.Count > 0))
             {
-                var dictRole = GameDictionary.GetAllRoles().FirstOrDefault(x => x.Role == role.Role);
+                // 強制指定讀取 Models 底下的 GameDictionary
+                var dictRole = Werewolf.Models.GameDictionary.GetAllRoles().FirstOrDefault(x => x.Role == role.Role);
                 <MudExpansionPanel Text="@role.Name">
                     <MudText Typo="Typo.body2" Class="mb-2"><b>技能：</b>@(dictRole?.Description ?? "無說明")</MudText>
                     <MudText Typo="Typo.body2" Color="Color.Success" Class="mb-1"><b>優點：</b>@(dictRole?.Advantage ?? "")</MudText>
