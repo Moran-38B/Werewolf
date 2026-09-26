@@ -11,11 +11,11 @@ namespace Werewolf.Models
         Werewolf,           // 狼人
         WolfKing,           // 狼王
         WhiteWolfKing,      // 白狼王
-		SnowWolf			// 雪狼
+		SnowWolf,			// 雪狼
     	GhostRider,        	// 惡靈騎士
         Gargoyle,           // 石像鬼
         WolfBeauty,         // 狼美人
-        BloodMoonApostle,   // 血月使徒
+    	BloodMoonApostle,  	// 血月使徒
         HiddenWolf,         // 隱狼
 
         // --- 神職陣營 ---
