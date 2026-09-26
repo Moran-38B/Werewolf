@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "Zkz3OCOi",
+  "version": "c/aidjjB",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-1UcDM1IQ/zZ2IyBUAuIlAiTsVyes4Z5INiDcbvokUOY=",
-      "url": "_framework/Werewolf.t2fugc2rpv.wasm"
+      "hash": "sha256-fRK2qiRM1ougzoYzTbtSkB3S8C8JKI5XyE/UKHjV+qU=",
+      "url": "_framework/Werewolf.fd6x3jsq7f.wasm"
     },
     {
-      "hash": "sha256-llzh4oET61RCd5NQqn+RlQ5II/WzKwvLwjO+hcpW8oE=",
+      "hash": "sha256-1euuLRRzWk/kWnqZXj6FDvz4vMhENXVvff8Sah3+tJg=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -228,6 +228,118 @@ self.assetsManifest = {
     {
       "hash": "sha256-oEo6d+KqX5fjxTiZk/w9NB3Mi0+ycS5yLwCKwr4IkbA=",
       "url": "icon-512.png"
+    },
+    {
+      "hash": "sha256-YyuPsYpG6pBTYk3vKkv9IOXqtTVyOcTsed/31ejyYJY=",
+      "url": "images/roles/IMG_0029.png"
+    },
+    {
+      "hash": "sha256-YLnkt1GxyXohPNw0mGlHls8qWhtfaogxnSREaBg2Flw=",
+      "url": "images/roles/IMG_0030.png"
+    },
+    {
+      "hash": "sha256-6BvbE0buNqFOognfzqe6MtF0gJ/Hzi+mhzeaDNxxY1Y=",
+      "url": "images/roles/IMG_0031.png"
+    },
+    {
+      "hash": "sha256-nJbQ+nT0VAC2dsLIAM1KeCMJcRL89G1Hni+mIDuQCng=",
+      "url": "images/roles/IMG_0032.png"
+    },
+    {
+      "hash": "sha256-FRmaHobQv6zG3LuSajj52161BSFqFNfoLk+wwmI+j0A=",
+      "url": "images/roles/IMG_0033.png"
+    },
+    {
+      "hash": "sha256-PxdZPtA3hepHGvT1etG56JzAX+zCIMoRoxkg7dXApTE=",
+      "url": "images/roles/IMG_0034.png"
+    },
+    {
+      "hash": "sha256-+FVrMkgABF5waFCzT8+S0HsWJSp001Ton8bmQTqEnV8=",
+      "url": "images/roles/IMG_0035.png"
+    },
+    {
+      "hash": "sha256-n0cnFaEqMHJG6DMqgVb9weLjJuaisHkaiFvUQSMsfjQ=",
+      "url": "images/roles/IMG_0036.png"
+    },
+    {
+      "hash": "sha256-WuUVpH9tnKpCw28zrEplU4SwImFtHnCj7od23OPQoyU=",
+      "url": "images/roles/IMG_0037.png"
+    },
+    {
+      "hash": "sha256-nwZDl5Y3NjLZtm0SbJeHz0SZuY1sQHFPTso4DiqDwa8=",
+      "url": "images/roles/IMG_0038.png"
+    },
+    {
+      "hash": "sha256-5AMuzYVzhhDok+dtfQLyztuq98DFsyX7Siuf94FhCC0=",
+      "url": "images/roles/IMG_0039.png"
+    },
+    {
+      "hash": "sha256-Bu2OTYN4m44av49Qu4lklGFgTG10xMdKfqVktRQkNzo=",
+      "url": "images/roles/IMG_0040.png"
+    },
+    {
+      "hash": "sha256-bDjuYP2wGRtbflZqwAYYsHCjy/qDmiah3sWYDEzPaQc=",
+      "url": "images/roles/IMG_0041.png"
+    },
+    {
+      "hash": "sha256-xPBV2cs+ExthRHQRoHYuFMkgwjE6IEZNtvLxz6D21K4=",
+      "url": "images/roles/IMG_0042.png"
+    },
+    {
+      "hash": "sha256-SJVfc/+cY7hG9TtZh5AKp8+c8dBM0Lk8TXCXoMvfr+M=",
+      "url": "images/roles/IMG_0043.png"
+    },
+    {
+      "hash": "sha256-60Zggy/7wIXN5a4Tcq8UQ18sfIgD2vPDZLfdij3OwoQ=",
+      "url": "images/roles/IMG_0044.png"
+    },
+    {
+      "hash": "sha256-eLkBd1MNSvMfdxwFuaRd4TuIsVnTnGXSQiPmRJ6o65s=",
+      "url": "images/roles/IMG_0045.png"
+    },
+    {
+      "hash": "sha256-lLbtpHknEcu3+cHTaV5pdFTwey2dJFaJiZBhJT7WZlY=",
+      "url": "images/roles/IMG_0046.png"
+    },
+    {
+      "hash": "sha256-7xJ4mj/qEcueGnz2xDthFLXpbxRwAl3PXb+rm6PXd9U=",
+      "url": "images/roles/IMG_0047.png"
+    },
+    {
+      "hash": "sha256-jLfzX9Lq2/btDTWOdyuPJXNPV1f1Sr8YBkzUtEOQwNo=",
+      "url": "images/roles/IMG_0048.png"
+    },
+    {
+      "hash": "sha256-wqykmG1QZfYf5p2eXUKO0u7gvTKGyDG1xo1nZTRvstY=",
+      "url": "images/roles/IMG_0049.png"
+    },
+    {
+      "hash": "sha256-xxdEYXyTLsmA/V2+9uNhIVvIqhcdTgpdJ/LR0EsLSOE=",
+      "url": "images/roles/IMG_0050.png"
+    },
+    {
+      "hash": "sha256-1njtT0JdriRL/XuWKz3XVaDW7p+QhcA+UrX2DwZW11I=",
+      "url": "images/roles/IMG_0051.png"
+    },
+    {
+      "hash": "sha256-gWLvxOgpkWtwsqbSUfqeK8mh2YJo8A4XKxuQU/J9HD8=",
+      "url": "images/roles/IMG_0052.png"
+    },
+    {
+      "hash": "sha256-Txv/34BqINyYhPxuL/DmbAB4PvVQwYQnN6Xnw5NSAHc=",
+      "url": "images/roles/IMG_0053.png"
+    },
+    {
+      "hash": "sha256-U39QVImqnEcON6sYFHpZagjwNQs4sveug/luCrCpfNE=",
+      "url": "images/roles/IMG_0054.png"
+    },
+    {
+      "hash": "sha256-47WTFixZAtRCeID9TDyiBJOC8FxCf9maJzE8p23bxZs=",
+      "url": "images/roles/IMG_0055.png"
+    },
+    {
+      "hash": "sha256-iDfmRCbUBfK01zSnutGv4gbdv1nBX/7QRlelGaanGZk=",
+      "url": "images/roles/IMG_0056.png"
     },
     {
       "hash": "sha256-BAioGeuC3KUBLMxSLFFnizEDKurf7KGzBRH5qmlF1fI=",
