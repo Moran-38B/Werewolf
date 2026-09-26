@@ -17,7 +17,7 @@
         @if (CurrentPhase.PhaseId == "Thief_Choose" && isPlayerSelectingThiefCard)
         {
             <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <MudText Typo="Typo.h4" Color="Color.White" Class="mb-8 font-weight-bold">請點擊選擇你的最終身份</MudText>
+                <MudText Typo="Typo.h4" Style="color: white;" Class="mb-8 font-weight-bold">請點擊選擇你的最終身份</MudText>
                 
                 <div style="display: flex; gap: 40px; justify-content: center; align-items: center; width: 100%; padding: 20px;">
                     @for (int i = 0; i < 2; i++)
@@ -44,7 +44,7 @@
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="mt-8 rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="@(() => isPlayerSelectingThiefCard = false)">
                         確認選擇
                     </MudButton>
-                    <MudText Typo="Typo.body2" Color="Color.Surface" Class="mt-3 mud-text-secondary">選定後請將平板交還給法官</MudText>
+                    <MudText Typo="Typo.body2" Style="color: white;" Class="mt-3 opacity-75">選定後請將平板交還給法官</MudText>
                 }
             </div>
         }
@@ -317,6 +317,7 @@
         if (CurrentPhase.PhaseId == "Thief_Choose")
         {
             if (thiefFinalRole == Role.Unknown) return; 
+            
             if (player.Role != Role.Unknown && player.Role != thiefFinalRole) return;
 
             if (player.Role == thiefFinalRole)
@@ -331,6 +332,7 @@
         }
 
         bool belongsToCurrentPhase = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && IsSpecialWolf(player.Role));
+        
         if (player.Role != Role.Unknown && !belongsToCurrentPhase) return;
 
         if (belongsToCurrentPhase)
@@ -406,7 +408,6 @@
 
     private void OnNextStepClicked()
     {
-        // 進入盜賊選牌階段時，開啟全螢幕讓玩家點選
         if (currentPhaseIndex + 1 < NightPhases.Count && NightPhases[currentPhaseIndex + 1].PhaseId == "Thief_Choose")
         {
             isPlayerSelectingThiefCard = true;
