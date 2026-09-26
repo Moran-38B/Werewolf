@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "41zVBl+j",
+  "version": "7lELN8Bf",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-1XG/60IkvRqMNVwEQg9UUC26FRivIyAiNUEUbkiB334=",
-      "url": "_framework/Werewolf.71gkch5hw7.wasm"
+      "hash": "sha256-3NBc/PE9t50iudPFJuX4XrP2qtlActyViBYofdSgtl0=",
+      "url": "_framework/Werewolf.wv2peiaokl.wasm"
     },
     {
-      "hash": "sha256-NiPAJZtMis7YoJCBjr4hreFb11BghRlL5rarYKM40C8=",
+      "hash": "sha256-2xozLH5wJs30IBXerP3cQWXQRzXGE+PUuyVhYdH7eAU=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -228,10 +228,6 @@ self.assetsManifest = {
     {
       "hash": "sha256-oEo6d+KqX5fjxTiZk/w9NB3Mi0+ycS5yLwCKwr4IkbA=",
       "url": "icon-512.png"
-    },
-    {
-      "hash": "sha256-YyuPsYpG6pBTYk3vKkv9IOXqtTVyOcTsed/31ejyYJY=",
-      "url": "images/Seer.png"
     },
     {
       "hash": "sha256-YLnkt1GxyXohPNw0mGlHls8qWhtfaogxnSREaBg2Flw=",
@@ -340,6 +336,10 @@ self.assetsManifest = {
     {
       "hash": "sha256-iDfmRCbUBfK01zSnutGv4gbdv1nBX/7QRlelGaanGZk=",
       "url": "images/roles/IMG_0056.png"
+    },
+    {
+      "hash": "sha256-YyuPsYpG6pBTYk3vKkv9IOXqtTVyOcTsed/31ejyYJY=",
+      "url": "images/roles/Seer.png"
     },
     {
       "hash": "sha256-BAioGeuC3KUBLMxSLFFnizEDKurf7KGzBRH5qmlF1fI=",
