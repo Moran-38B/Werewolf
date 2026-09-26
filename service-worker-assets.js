@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "h42IgTIb",
+  "version": "Zkz3OCOi",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-tObSW35hXFK5jtAA98ZBld6Xwyqw9wYx8gkVrlqx1vg=",
-      "url": "_framework/Werewolf.4ux4tixfcg.wasm"
+      "hash": "sha256-1UcDM1IQ/zZ2IyBUAuIlAiTsVyes4Z5INiDcbvokUOY=",
+      "url": "_framework/Werewolf.t2fugc2rpv.wasm"
     },
     {
-      "hash": "sha256-c1LPE/AWfGSt7sAgWJivLWQq5HinXS8aIuvtkYxQZR4=",
+      "hash": "sha256-llzh4oET61RCd5NQqn+RlQ5II/WzKwvLwjO+hcpW8oE=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -228,6 +228,10 @@ self.assetsManifest = {
     {
       "hash": "sha256-oEo6d+KqX5fjxTiZk/w9NB3Mi0+ycS5yLwCKwr4IkbA=",
       "url": "icon-512.png"
+    },
+    {
+      "hash": "sha256-BAioGeuC3KUBLMxSLFFnizEDKurf7KGzBRH5qmlF1fI=",
+      "url": "images/roles/jioer.cs"
     },
     {
       "hash": "sha256-SztTy+vx1lyqgfswT6kQ9qGrvcsl3xldxPj+t8fGESI=",
