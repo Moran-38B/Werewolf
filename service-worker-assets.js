@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "f5z9jYL+",
+  "version": "sbelDs0W",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-oL/SYu7B38jNWoqSkLl36hpRHo6iJaJiZ/teyETtsfw=",
-      "url": "_framework/Werewolf.kf7j0d05qx.wasm"
+      "hash": "sha256-Qt3pQY41bQ4/v2r3bK00spYDhPSv2x4lihxt/a/71aY=",
+      "url": "_framework/Werewolf.6vu8jfc5lv.wasm"
     },
     {
-      "hash": "sha256-ttgxJP0yh3beWWK89/rzXIa8Jm6AtZCsAy/lJXgJoQU=",
+      "hash": "sha256-Eyt+51Ee0B0c6bnbsXsXB0qDoqiW5YHyYafOEeX8tCA=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -258,6 +258,10 @@ self.assetsManifest = {
       "url": "images/roles/Gargoyle.png"
     },
     {
+      "hash": "sha256-Txv/34BqINyYhPxuL/DmbAB4PvVQwYQnN6Xnw5NSAHc=",
+      "url": "images/roles/GhostRider.png"
+    },
+    {
       "hash": "sha256-60Zggy/7wIXN5a4Tcq8UQ18sfIgD2vPDZLfdij3OwoQ=",
       "url": "images/roles/GraveKeeper.png"
     },
@@ -272,10 +276,6 @@ self.assetsManifest = {
     {
       "hash": "sha256-6BvbE0buNqFOognfzqe6MtF0gJ/Hzi+mhzeaDNxxY1Y=",
       "url": "images/roles/Hunter.png"
-    },
-    {
-      "hash": "sha256-Txv/34BqINyYhPxuL/DmbAB4PvVQwYQnN6Xnw5NSAHc=",
-      "url": "images/roles/IMG_0053.png"
     },
     {
       "hash": "sha256-U39QVImqnEcON6sYFHpZagjwNQs4sveug/luCrCpfNE=",
