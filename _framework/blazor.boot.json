@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Werewolf",
   "resources": {
-    "hash": "sha256-QxFuHiBe8olTCXb1M8zfGhiEHAhLAb6Qf/w3MBuwzWY=",
+    "hash": "sha256-PxygyoRJKldK535PkccBwNMX+u4ZNV/wTtqtKbq0Oxk=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.uvw04aawoi.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Forms.k4xpc0uo5x.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -42,7 +42,7 @@
       "System.Text.Json.dotf3un4tp.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.7l12welszt.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.fko28wiqy6.wasm": "System.Private.CoreLib.wasm",
-      "Werewolf.5e9ny3lih9.wasm": "Werewolf.wasm",
+      "Werewolf.x6ow10z6ix.wasm": "Werewolf.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.6sals8nuk0.js": "dotnet.native.js",
       "dotnet.native.zzmgzj9wb3.wasm": "dotnet.native.wasm",
@@ -107,7 +107,7 @@
       "System.Text.Encodings.Web.otlnnlesab.wasm": "sha256-PJnFgVKSoB0TNWJSfzXKHf8spBwn98YHVCFELdwxgR8=",
       "System.Text.Json.dotf3un4tp.wasm": "sha256-AzF0SUUmwOuhdDX/PI7MBpjLOwCkb9RB5owYfFsfDy0=",
       "System.Text.RegularExpressions.7l12welszt.wasm": "sha256-dSPjSZC0zDXURv1jY7Nnx0dLh76dUmvp4CXuS4uuda4=",
-      "Werewolf.5e9ny3lih9.wasm": "sha256-s1L2wXuRphCOGVY3uFCP9LnvDse4E6uBf+fuzpb72Pw="
+      "Werewolf.x6ow10z6ix.wasm": "sha256-eZNbBz9mhZI5VBEzipWaGVaP40DNDMPm4EuHHxZ/wBg="
     }
   },
   "cacheBootResources": true,
