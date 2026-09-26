@@ -53,7 +53,7 @@
                     
                     <div class="d-flex align-center justify-space-between mb-2">
                         <MudText Typo="Typo.subtitle2" Color="Color.Secondary">腳本提示</MudText>
-                        <MudIconButton Icon="@Icons.Material.Filled.VolumeUp" Color="Color.Primary" Size="Size.Small" Title="播放語音" />
+                        <MudIconButton Icon="@Icons.Material.Filled.VolumeUp" Color="Color.Primary" Size="Size.Small" title="播放語音" />
                     </div>
                     <MudText Typo="Typo.body2" Class="mud-text-secondary" Style="white-space: pre-line;">
                         @CurrentPhase.ScriptText
@@ -141,7 +141,7 @@
                             @CurrentPhase.TargetLabel (請點選目標座位)：
                             @if (currentTargetSeat > 0)
                             {
-                                <MudChip Color="Color.Error" Size="Size.Small" Class="ml-2">@currentTargetSeat 號</MudChip>
+                                <MudChip T="string" Color="Color.Error" Size="Size.Small" Class="ml-2">@currentTargetSeat 號</MudChip>
                             }
                         </MudText>
                     }
@@ -150,7 +150,7 @@
                         @if (CurrentPhase.Role == Role.Thief)
                         {
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="NextStep" Style="height: 56px;">
-                                <MudIcon Icon="@Icons.Material.Filled.CheckDouble" Class="mr-2"/> 雙擊確認 (Next Step)
+                                <MudIcon Icon="@Icons.Material.Filled.DoneAll" Class="mr-2"/> 雙擊確認 (Next Step)
                             </MudButton>
                         }
                         else
@@ -190,7 +190,7 @@
     // 狀態機核心變數
     private List<NightPhase> NightPhases = new();
     private int currentPhaseIndex = 0;
-    private NightPhase CurrentPhase => NightPhases.Count > 0 && currentPhaseIndex < NightPhases.Count ? NightPhases[currentPhaseIndex] : null;
+    private NightPhase? CurrentPhase => NightPhases.Count > 0 && currentPhaseIndex < NightPhases.Count ? NightPhases[currentPhaseIndex] : null;
 
     // 行動目標暫存 (擊殺、查驗等)
     private int currentTargetSeat = -1;
@@ -224,7 +224,6 @@
         
         if (rolesInPlay.Any(r => r.Faction == "狼人"))
         {
-            // 將所有狼人陣營合併在「狼人」階段處理
             NightPhases.Add(new NightPhase { Role = Role.Werewolf, RoleName = "狼人", ScriptText = "狼人請睜眼。\n請確認彼此身份，狼王/白狼王請示意。\n狼人請決定擊殺對象。", TargetLabel = "擊殺對象" });
         }
 
@@ -232,46 +231,38 @@
         {
             NightPhases.Add(new NightPhase { Role = Role.Gargoyle, RoleName = "石像鬼", ScriptText = "石像鬼請睜眼。\n請選擇你要查驗的對象。", TargetLabel = "查驗對象" });
         }
-
-        // 可以在此處繼續加入預言家、女巫、獵人等步驟...
     }
 
-    // 座位點擊邏輯 (包含：指派/取消身份、選擇目標)
+    // 座位點擊邏輯
     private void OnSeatClicked(Player player)
     {
-        // 1. 如果該職業需要指定目標，且點擊的不是自己人，則切換目標
+        if (CurrentPhase == null) return;
+
         if (!string.IsNullOrEmpty(CurrentPhase.TargetLabel) && player.Role != CurrentPhase.Role && !IsSpecialWolf(player.Role))
         {
-            // 單選切換邏輯 (Radio-button like)
             currentTargetSeat = (currentTargetSeat == player.SeatNumber) ? -1 : player.SeatNumber;
             return;
         }
 
-        // 2. 指派與取消身份邏輯 (Toggle)
         if (player.Role == CurrentPhase.Role || IsSpecialWolf(player.Role))
         {
-            // 已有身份，再次點選則取消 (橡皮擦功能)
             player.Role = Role.Unknown;
             player.RoleName = "未知身份";
             player.Faction = "未知";
         }
         else if (player.Role == Role.Unknown)
         {
-            // 空位，指派為當前階段的身份
             player.Role = CurrentPhase.Role;
             var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == CurrentPhase.Role);
             player.RoleName = roleInfo?.Name ?? "未知";
             player.Faction = roleInfo?.Faction ?? "未知";
             
-            // 如果原本是目標，被指派為自己人後，取消目標鎖定
             if (currentTargetSeat == player.SeatNumber) currentTargetSeat = -1;
         }
     }
 
-    // 狼人階段專用：將選取的普通狼人，轉為特殊狼 (狼王、白狼王等)
     private void ConvertSelectedWolfToSpecial(Role specialRole, string specialName)
     {
-        // 尋找最後一個被點選為普通狼人的座位，將其升級為特殊狼
         var lastWolf = GameManager.Players.LastOrDefault(p => p.Role == Role.Werewolf);
         if (lastWolf != null)
         {
@@ -287,7 +278,6 @@
 
     private void NextStep()
     {
-        // 紀錄當前階段的行動 (例如將 currentTargetSeat 存入 GameManager 紀錄)，然後清空
         currentTargetSeat = -1;
 
         if (currentPhaseIndex < NightPhases.Count - 1)
@@ -296,8 +286,7 @@
         }
         else
         {
-            // 所有階段結束，進入白天
-            NavigationManager.NavigateTo("/day"); // 假設下一個頁面是白天階段
+            NavigationManager.NavigateTo("/day"); 
         }
     }
 
@@ -308,12 +297,11 @@
         NavigationManager.NavigateTo("");
     }
 
-    // 內部類別：用於定義每一階段的 UI 腳本與資料
     public class NightPhase
     {
         public Role Role { get; set; }
-        public string RoleName { get; set; }
-        public string ScriptText { get; set; }
-        public string TargetLabel { get; set; } // 若為空，表示該階段無須選擇目標 (如盜賊)
+        public string RoleName { get; set; } = "";
+        public string ScriptText { get; set; } = "";
+        public string TargetLabel { get; set; } = ""; 
     }
 }
