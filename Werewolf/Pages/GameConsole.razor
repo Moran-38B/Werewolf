@@ -14,12 +14,12 @@
         @* ========================================== *@
         @* 盜賊玩家專屬：全螢幕純圖片選牌畫面 *@
         @* ========================================== *@
-        @if (CurrentPhase.PhaseId == "Thief_Choose" && isPlayerSelectingThiefCard)
+        @if (CurrentPhase.PhaseId == "Thief" && isPlayerSelectingThiefCard)
         {
-            <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <MudText Typo="Typo.h4" Style="color: white;" Class="mb-8 font-weight-bold">請點擊選擇你的最終身份</MudText>
+            <div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
+                <MudText Typo="Typo.h4" Style="color: white;" Class="mb-6 font-weight-bold">請點選你的最終身份</MudText>
                 
-                <div style="display: flex; gap: 40px; justify-content: center; align-items: center; width: 100%; padding: 20px;">
+                <div style="display: flex; gap: 40px; justify-content: center; align-items: center; width: 100%; padding: 10px;">
                     @for (int i = 0; i < 2; i++)
                     {
                         var cardRole = GameManager.BottomCards[i];
@@ -28,10 +28,8 @@
                         <div style="width: 35vw; max-width: 350px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: @(thiefFinalRole == cardRole ? "6px solid #FFD700" : "4px solid #333"); cursor: pointer; transition: 0.2s; box-shadow: @(thiefFinalRole == cardRole ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none");"
                              @onclick="@(() => thiefFinalRole = cardRole)">
                             
-                            @* 讀取 wwwroot/images/roles/ 裡的對應圖片 *@
                             <img src="@($"images/roles/{cardRole}.png")" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                             
-                            @* 圖片若尚未上傳，顯示備用色塊防呆 *@
                             <div style="display: none; width: 100%; height: 100%; background-color: #444; color: white; justify-content: center; align-items: center; font-size: 2rem;">
                                 圖片遺失
                             </div>
@@ -41,10 +39,10 @@
                 
                 @if (thiefFinalRole != Role.Unknown)
                 {
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="mt-8 rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="@(() => isPlayerSelectingThiefCard = false)">
+                    <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">選定後請將平板交還給法官</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="ConfirmThiefSelection">
                         確認選擇
                     </MudButton>
-                    <MudText Typo="Typo.body2" Style="color: white;" Class="mt-3 opacity-75">選定後請將平板交還給法官</MudText>
                 }
             </div>
         }
@@ -63,7 +61,6 @@
         </MudItem>
 
         <MudGrid Spacing="4">
-            @* 左側：腳本與進度 *@
             <MudItem xs="12" md="3">
                 <MudCard Elevation="3" Class="pa-4 h-100">
                     <MudText Typo="Typo.h6" Class="mb-3"><MudIcon Icon="@Icons.Material.Filled.FormatListNumbered" Class="mr-2 mb-n1"/> 職業順序</MudText>
@@ -86,7 +83,6 @@
                 </MudCard>
             </MudItem>
 
-            @* 右側：座位與操作 *@
             <MudItem xs="12" md="9">
                 <MudCard Elevation="3" Class="pa-4">
                     <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1"/> 玩家座位表 (點擊登記/取消身份)</MudText>
@@ -94,16 +90,7 @@
                     <MudGrid Spacing="2" Class="mb-6">
                         @foreach (var player in GameManager.Players)
                         {
-                            bool isSelected = false;
-                            if (CurrentPhase.PhaseId == "Thief_Choose")
-                            {
-                                isSelected = (player.Role == thiefFinalRole && thiefFinalRole != Role.Unknown);
-                            }
-                            else
-                            {
-                                isSelected = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && IsSpecialWolf(player.Role));
-                            }
-                            
+                            bool isSelected = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && IsSpecialWolf(player.Role));
                             bool isLocked = player.Role != Role.Unknown && !isSelected;
                             var isTargeted = currentTargetSeats.Contains(player.SeatNumber) || (CurrentPhase.PhaseId == "Witch" && witchPoisonTarget == player.SeatNumber);
 
@@ -132,8 +119,7 @@
 
                     <MudDivider Class="my-4" />
                     
-                    @* 動態選項區 *@
-                    @if (CurrentPhase.PhaseId == "Thief_Set")
+                    @if (CurrentPhase.PhaseId == "Thief")
                     {
                         <MudText Typo="Typo.subtitle1" Class="mb-2 font-weight-bold">法官請設定底牌 (已過濾重複神職)：</MudText>
                         <div class="d-flex gap-4 mb-4">
@@ -149,10 +135,6 @@
                                 </MudSelect>
                             }
                         </div>
-                    }
-                    else if (CurrentPhase.PhaseId == "Thief_Choose")
-                    {
-                        <MudText Typo="Typo.subtitle1" Class="mb-2 font-weight-bold text-success">玩家已選擇身分。法官請點擊上方座位綁定，綁定後按下一頁：</MudText>
                     }
                     else if (CurrentPhase.Role == Role.Werewolf && HasSpecialWolvesInSetup())
                     {
@@ -196,8 +178,14 @@
                         </div>
                     }
                     
-                    <div class="d-flex justify-end mt-6">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="OnNextStepClicked" Style="height: 56px; min-width: 150px;">下一頁</MudButton>
+                    <div class="d-flex flex-column align-end mt-6">
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Error" Class="mb-2 font-weight-bold">@errorMessage</MudText>
+                        }
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="OnNextStepClicked" Style="height: 56px; min-width: 150px;">
+                            @(CurrentPhase.PhaseId == "Thief" ? "玩家選牌" : "下一頁")
+                        </MudButton>
                     </div>
                 </MudCard>
             </MudItem>
@@ -241,6 +229,7 @@
     private bool showSeerResult = false;
     private string seerResultText = "";
     private bool seerResultIsBad = false;
+    private string errorMessage = "";
     
     private List<NightPhase> NightPhases = new();
     private int currentPhaseIndex = 0;
@@ -252,7 +241,6 @@
     private bool witchUsedSave = false;
     private int witchPoisonTarget = -1;
     
-    // 控制玩家全螢幕選牌的開關
     private bool isPlayerSelectingThiefCard = false;
 
     protected override void OnInitialized()
@@ -284,8 +272,7 @@
 
         if (rolesInPlay.Any(r => r.Role == Role.Thief))
         {
-            NightPhases.Add(new NightPhase { PhaseId = "Thief_Set", Role = Role.Thief, RoleName = "盜賊 (設定底牌)", ScriptText = "請法官先在系統中設定盜賊的兩張底牌，不可選擇相同的唯一神職。", MaxTargets = 0 });
-            NightPhases.Add(new NightPhase { PhaseId = "Thief_Choose", Role = Role.Thief, RoleName = "盜賊 (玩家選牌)", ScriptText = "盜賊請睜眼，將平板遞給玩家點選。選定後收回平板進行座位綁定。", MaxTargets = 0 });
+            NightPhases.Add(new NightPhase { PhaseId = "Thief", Role = Role.Thief, RoleName = "盜賊", ScriptText = "法官請點擊上方座位指定盜賊玩家，並設定底牌。\n完成後點擊「玩家選牌」交給玩家。", MaxTargets = 0 });
         }
 
         foreach (var setupRole in rolesInPlay)
@@ -314,25 +301,7 @@
     {
         if (CurrentPhase == null) return;
 
-        if (CurrentPhase.PhaseId == "Thief_Choose")
-        {
-            if (thiefFinalRole == Role.Unknown) return; 
-            
-            if (player.Role != Role.Unknown && player.Role != thiefFinalRole) return;
-
-            if (player.Role == thiefFinalRole)
-            {
-                player.Role = Role.Unknown; player.RoleName = "未知身份"; player.Faction = "未知";
-            }
-            else
-            {
-                AssignRoleToPlayerSafely(player, thiefFinalRole);
-            }
-            return;
-        }
-
         bool belongsToCurrentPhase = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && IsSpecialWolf(player.Role));
-        
         if (player.Role != Role.Unknown && !belongsToCurrentPhase) return;
 
         if (belongsToCurrentPhase)
@@ -408,9 +377,25 @@
 
     private void OnNextStepClicked()
     {
-        if (currentPhaseIndex + 1 < NightPhases.Count && NightPhases[currentPhaseIndex + 1].PhaseId == "Thief_Choose")
+        errorMessage = ""; // 清空錯誤訊息
+
+        if (CurrentPhase?.PhaseId == "Thief")
         {
+            var thiefPlayer = GameManager.Players.FirstOrDefault(p => p.Role == Role.Thief);
+            if (thiefPlayer == null)
+            {
+                errorMessage = "請先點選上方座位，指定哪一位玩家是盜賊！";
+                return;
+            }
+            if (GameManager.BottomCards[0] == Role.Unknown || GameManager.BottomCards[1] == Role.Unknown)
+            {
+                errorMessage = "請先選擇兩張盜賊的底牌！";
+                return;
+            }
+            
+            // 驗證通過，進入玩家全螢幕選牌
             isPlayerSelectingThiefCard = true;
+            return;
         }
 
         if (CurrentPhase?.Role == Role.Seer && currentTargetSeats.Count == 1)
@@ -428,6 +413,22 @@
         NextStep();
     }
     
+    // 玩家選牌完成後的自動化綁定
+    private void ConfirmThiefSelection()
+    {
+        var thiefPlayer = GameManager.Players.FirstOrDefault(p => p.Role == Role.Thief);
+        if (thiefPlayer != null && thiefFinalRole != Role.Unknown)
+        {
+            var rInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(x => x.Role == thiefFinalRole);
+            thiefPlayer.Role = thiefFinalRole;
+            thiefPlayer.RoleName = $"{rInfo?.Name} (盜賊)";
+            thiefPlayer.Faction = rInfo?.Faction ?? "未知";
+        }
+        
+        isPlayerSelectingThiefCard = false;
+        NextStep(); // 選完直接跳轉下一階段
+    }
+
     private void ConfirmSeerResult()
     {
         showSeerResult = false;
@@ -440,6 +441,7 @@
         activeSpecialWolf = Role.Unknown;
         witchPoisonTarget = -1;
         witchUsedSave = false;
+        errorMessage = "";
 
         if (currentPhaseIndex < NightPhases.Count - 1)
         {
