@@ -251,7 +251,7 @@
 
     private HashSet<int> currentTargetSeats = new();
     private Role thiefFinalRole = Role.Unknown;
-    private int selectedThiefCardIndex = -1; 
+    private int selectedThiefCardIndex = -1; // 追蹤玩家選擇的是左邊還是右邊的卡片
     private Role activeSpecialWolf = Role.Unknown;
     private bool witchUsedSave = false;
     private int witchPoisonTarget = -1;
@@ -424,13 +424,13 @@
             {
                 forceWolfChoice = true;
                 thiefFinalRole = card0;
-                selectedThiefCardIndex = 0; 
+                selectedThiefCardIndex = 0; // 強制鎖定左邊卡片
             }
             else if (!isWolf0 && isWolf1)
             {
                 forceWolfChoice = true;
                 thiefFinalRole = card1;
-                selectedThiefCardIndex = 1; 
+                selectedThiefCardIndex = 1; // 強制鎖定右邊卡片
             }
             else
             {
