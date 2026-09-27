@@ -17,16 +17,28 @@
         @if (CurrentPhase.PhaseId == "Thief" && isPlayerSelectingThiefCard)
         {
             <div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
-                <MudText Typo="Typo.h4" Style="color: white;" Class="mb-6 font-weight-bold">請點選你的最終身份</MudText>
+                <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">請確認你的最終身份</MudText>
                 
+                @if (forceWolfChoice)
+                {
+                    <MudText Typo="Typo.h6" Style="color: #FF5252;" Class="mb-4 font-weight-bold">※ 底牌包含狼人陣營，已自動強制選擇</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.h6" Style="color: transparent;" Class="mb-4 font-weight-bold">請點擊卡牌選擇</MudText>
+                }
+
                 <div style="display: flex; gap: 40px; justify-content: center; align-items: center; width: 100%; padding: 10px;">
                     @for (int i = 0; i < 2; i++)
                     {
                         var cardRole = GameManager.BottomCards[i];
                         if (cardRole == Role.Unknown) continue;
                         
-                        <div style="width: 35vw; max-width: 350px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: @(thiefFinalRole == cardRole ? "6px solid #FFD700" : "4px solid #333"); cursor: pointer; transition: 0.2s; box-shadow: @(thiefFinalRole == cardRole ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none");"
-                             @onclick="@(() => thiefFinalRole = cardRole)">
+                        bool isThisWolf = IsWolfFaction(cardRole);
+                        bool isDisabled = forceWolfChoice && !isThisWolf;
+                        
+                        <div style="width: 35vw; max-width: 350px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: @(thiefFinalRole == cardRole ? "6px solid #FFD700" : "4px solid #333"); cursor: @(isDisabled ? "not-allowed" : "pointer"); transition: 0.2s; box-shadow: @(thiefFinalRole == cardRole ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none"); opacity: @(isDisabled ? "0.3" : "1");"
+                             @onclick="@(() => { if (!forceWolfChoice) thiefFinalRole = cardRole; })">
                             
                             <img src="@($"images/roles/{cardRole}.png")" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                             
@@ -39,7 +51,7 @@
                 
                 @if (thiefFinalRole != Role.Unknown)
                 {
-                    <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">選定後請將平板交還給法官</MudText>
+                    <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">確認完畢後請將平板交還給法官</MudText>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="ConfirmThiefSelection">
                         確認選擇
                     </MudButton>
@@ -242,6 +254,7 @@
     private int witchPoisonTarget = -1;
     
     private bool isPlayerSelectingThiefCard = false;
+    private bool forceWolfChoice = false; // 控制有狼必選狼的標記
 
     protected override void OnInitialized()
     {
@@ -371,13 +384,19 @@
         }
     }
 
+    private bool IsWolfFaction(Role role)
+    {
+        var dictRole = Werewolf.Models.GameDictionary.GetAllRoles().FirstOrDefault(x => x.Role == role);
+        return dictRole?.Faction == "狼人";
+    }
+
     private bool HasSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Any(r => IsSpecialWolf(r.Role) && r.Count > 0);
     private List<RoleItem> GetSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Where(r => IsSpecialWolf(r.Role) && r.Count > 0).ToList();
     private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle || role == Role.SnowWolf;
 
     private void OnNextStepClicked()
     {
-        errorMessage = ""; // 清空錯誤訊息
+        errorMessage = ""; 
 
         if (CurrentPhase?.PhaseId == "Thief")
         {
@@ -393,7 +412,28 @@
                 return;
             }
             
-            // 驗證通過，進入玩家全螢幕選牌
+            // 判斷是否有狼人陣營牌
+            var card0 = GameManager.BottomCards[0];
+            var card1 = GameManager.BottomCards[1];
+            bool isWolf0 = IsWolfFaction(card0);
+            bool isWolf1 = IsWolfFaction(card1);
+
+            if (isWolf0 && !isWolf1)
+            {
+                forceWolfChoice = true;
+                thiefFinalRole = card0;
+            }
+            else if (!isWolf0 && isWolf1)
+            {
+                forceWolfChoice = true;
+                thiefFinalRole = card1;
+            }
+            else
+            {
+                forceWolfChoice = false;
+                thiefFinalRole = Role.Unknown;
+            }
+
             isPlayerSelectingThiefCard = true;
             return;
         }
@@ -413,7 +453,6 @@
         NextStep();
     }
     
-    // 玩家選牌完成後的自動化綁定
     private void ConfirmThiefSelection()
     {
         var thiefPlayer = GameManager.Players.FirstOrDefault(p => p.Role == Role.Thief);
@@ -426,7 +465,7 @@
         }
         
         isPlayerSelectingThiefCard = false;
-        NextStep(); // 選完直接跳轉下一階段
+        NextStep(); 
     }
 
     private void ConfirmSeerResult()
