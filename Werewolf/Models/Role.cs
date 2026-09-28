@@ -23,8 +23,8 @@ namespace Werewolf.Models
         Witch,              // 女巫
         Hunter,             // 獵人
         Guard,              // 守衛
-        Idiot,              // 白癡
         Knight,             // 騎士
+        Idiot,              // 白癡
         Silencer,           // 禁言長老
         BearTamer,          // 訓熊師
         GraveKeeper,        // 守墓人
@@ -32,11 +32,11 @@ namespace Werewolf.Models
         Dreamcatcher,       // 攝夢人
         Magician,           // 魔術師
         Crow,               // 烏鴉
+        Bomber,             // 炸彈人
 
         // --- 第三方 / 特殊陣營 ---
         Cupid,              // 邱比特
         WildChild,          // 野孩子
         Thief,              // 盜賊
-        Bomber              // 炸彈人
     }
 }

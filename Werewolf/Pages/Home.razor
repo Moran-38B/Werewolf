@@ -19,7 +19,7 @@
                 
                 @* 左側：推薦配置下拉選單 (佔據大比例空間 md="8" lg="9"，填滿空白) *@
                 <MudItem xs="12" md="8" lg="9">
-                    <MudSelect T="RoleSetup" Label="推薦版子 (快速套用)" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true" Class="mb-0">
+                    <MudSelect T="RoleSetup" Label="推薦版子" Value="CurrentSetup" ValueChanged="OnSetupChanged" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" FullWidth="true" Class="mb-0">
                         @foreach (var setup in Recommendations)
                         {
                             <MudSelectItem Value="@setup">@setup.SetupName</MudSelectItem>
@@ -30,10 +30,10 @@
 
                 @* 右側：操作按鈕 (加入 mt-md-2 將按鈕微幅向下推，完美切齊左側的輸入外框) *@
                 <MudItem xs="12" md="4" lg="3" Class="d-flex gap-3 mt-md-2">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px;" Class="flex-grow-1">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px;" FullWidth="true" Class="flex-grow-1">
                         遊戲規則
                     </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 56px;" Class="flex-grow-1">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="StartGame" Style="height: 56px;" FullWidth="true" Class="flex-grow-1">
                         產生座位
                     </MudButton>
                 </MudItem>
@@ -74,10 +74,23 @@
                     <MudGrid>
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
                         {
-                            <MudItem xs="6" sm="4">
-                                <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
-                                                 Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
-                            </MudItem>
+                            if(role.Role == Role.Werewolf)
+                            {
+                                <MudItem xs="6" sm="4">
+                                    <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" 
+                                                     Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
+                                </MudItem>
+                            }
+                            else
+                            {
+                                <MudItem xs="6" sm="4">
+                                    <MudCheckBox T="bool"
+                                                 Value="@(role.Count > 0)"
+                                                 ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))"
+                                                 Label="@role.Name"
+                                                 Color="Color.Primary" />
+                                </MudItem>
+                            }
                         }
                     </MudGrid>
                 </MudCard>
