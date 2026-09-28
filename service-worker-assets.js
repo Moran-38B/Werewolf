@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "rrWFAQMo",
+  "version": "fVYmsb20",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-3qaK6pbU7cUiY8bHfkhgxw2gpoxkcH5K6XuYYS80/lA=",
-      "url": "_framework/Werewolf.6eivkxgm65.wasm"
+      "hash": "sha256-oiRGb8APF24baydq3fKC3lAB/IhjubKHUANAV4R1H4I=",
+      "url": "_framework/Werewolf.249eb1n4k8.wasm"
     },
     {
-      "hash": "sha256-TP4//WX1XmvZYilObuWkPTcPJpcFqU3LIAl74oHCaXE=",
+      "hash": "sha256-zjLvU7CRYjZGG9uE3NKwDkwEWuW6qe1AqWj/jH58ols=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -342,7 +342,7 @@ self.assetsManifest = {
       "url": "images/roles/jioer.cs"
     },
     {
-      "hash": "sha256-SztTy+vx1lyqgfswT6kQ9qGrvcsl3xldxPj+t8fGESI=",
+      "hash": "sha256-BYEIzwiEWBwBhuptaILhEiyn9hvo2m2zyq/9mg0TIEw=",
       "url": "index.html"
     },
     {
