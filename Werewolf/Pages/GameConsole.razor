@@ -207,6 +207,7 @@
     }
 </MudContainer>
 
+
 <MudDialog @bind-Visible="isEncyclopediaOpen" Options="new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true }">
     <TitleContent>
         <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.MenuBook" Class="mr-2 mb-n1"/> 當局角色百科</MudText>
@@ -244,7 +245,7 @@
     private string seerResultText = "";
     private bool seerResultIsBad = false;
     private string errorMessage = "";
-    
+
     private List<NightPhase> NightPhases = new();
     private int currentPhaseIndex = 0;
     private NightPhase? CurrentPhase => NightPhases.Count > 0 && currentPhaseIndex < NightPhases.Count ? NightPhases[currentPhaseIndex] : null;
@@ -255,7 +256,7 @@
     private Role activeSpecialWolf = Role.Unknown;
     private bool witchUsedSave = false;
     private int witchPoisonTarget = -1;
-    
+
     private bool isPlayerSelectingThiefCard = false;
     private bool forceWolfChoice = false; 
 
@@ -288,7 +289,7 @@
 
         if (rolesInPlay.Any(r => r.Role == Role.Thief))
         {
-            NightPhases.Add(new NightPhase { PhaseId = "Thief", Role = Role.Thief, RoleName = "盜賊", ScriptText = "法官請點擊上方座位指定盜賊玩家，並設定底牌。\n完成後點擊「玩家選牌」交給玩家。", MaxTargets = 0 });
+            NightPhases.Add(new NightPhase { PhaseId = "Thief", Role = Role.Thief, RoleName = "盜賊", ScriptText = "盜賊請睜眼，請選擇你要換的身分。", MaxTargets = 0 });
         }
 
         foreach (var setupRole in rolesInPlay)
@@ -300,14 +301,21 @@
             int maxT = 1;
             string pId = setupRole.Role.ToString();
 
-            if (setupRole.Role == Role.Werewolf) { script = "狼人請睜眼，請確認彼此身份，狼王、白狼王、雪狼請示意，狼人請決定擊殺對象。"; target = "擊殺對象"; }
+            if (setupRole.Role == Role.Werewolf) { script = "狼人請睜眼，請確認彼此身份，請選擇你們今晚的擊殺對象。\n狼人請閉眼。"; target = "擊殺對象"; }
             else if (setupRole.Role == Role.Gargoyle) { script = "石像鬼請睜眼，請選擇你要查驗的對象，若其他狼人皆已死亡，請選擇擊殺對象。"; target = "查驗/擊殺對象"; }
             else if (setupRole.Role == Role.HiddenWolf) { script = "隱狼請睜眼，若其他狼人皆已死亡，請選擇擊殺對象。"; target = "擊殺對象"; }
             else if (setupRole.Role == Role.Cupid) { script = "邱比特請睜眼，請選擇你要連線的兩名玩家。"; target = "連線對象"; maxT = 2; }
-            else if (setupRole.Role == Role.Seer) { script = "預言家請睜眼，請選擇你要查驗的對象。"; target = "查驗對象"; }
-            else if (setupRole.Role == Role.Witch) { script = "女巫請睜眼，昨晚死的是他，你要使用解藥嗎，你要使用毒藥嗎。"; target = ""; maxT = 0; pId = "Witch"; }
+            else if (setupRole.Role == Role.Seer) { script = "預言家請睜眼，請選擇你要查驗的對象，他的身分是...\n預言家請閉眼。"; target = "查驗對象"; }
+            else if (setupRole.Role == Role.Witch) { script = "女巫請睜眼，今晚他被殺死了，你要使用解藥嗎？你要使用毒藥嗎？你要使用的對象是？\n女巫請閉眼。"; target = ""; maxT = 0; pId = "Witch"; }
+            // else if (setupRole.Role == Role.Hunter) { script = "獵人請睜眼。\n獵人請閉眼。"; }
             else if (setupRole.Role == Role.Guard) { script = "守衛請睜眼，請選擇你要守護的對象。"; target = "守護對象"; }
             else if (setupRole.Role == Role.Magician) { script = "魔術師請睜眼，請選擇兩名玩家進行交換。"; target = "交換對象"; maxT = 2; }
+            else if(setupRole.Role == Role.Hunter)
+            {
+                script = $"{setupRole.Name}請睜眼。\n{setupRole.Name}請閉眼。";
+                target = "";
+                maxT = 0;
+            }
 
             NightPhases.Add(new NightPhase { PhaseId = pId, Role = setupRole.Role, RoleName = setupRole.Name, ScriptText = script, TargetLabel = target, MaxTargets = maxT });
         }
@@ -393,28 +401,53 @@
         return dictRole?.Faction == "狼人";
     }
 
+    private bool IsWolfInWolfPhase(Role role)
+    {
+        return IsWolfFaction(role) && role != Role.Gargoyle && role != Role.HiddenWolf;
+    }
+
     private bool HasSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Any(r => IsSpecialWolf(r.Role) && r.Count > 0);
     private List<RoleItem> GetSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Where(r => IsSpecialWolf(r.Role) && r.Count > 0).ToList();
-    private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle || role == Role.SnowWolf;
+    private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle ;
 
     private void OnNextStepClicked()
     {
-        errorMessage = ""; 
+        errorMessage = "";
+
+        if (CurrentPhase != null)
+        {
+            int expectedCount = 0;
+            int actualCount = 0;
+            string roleDisplayName = CurrentPhase.RoleName;
+
+            if (CurrentPhase.Role == Role.Werewolf)
+            {
+                // 狼人階段：所有狼人與特殊狼 (扣除盜賊變身者、石像鬼、隱狼)
+                expectedCount = GameManager.CurrentSetup.Roles.Where(r => IsWolfInWolfPhase(r.Role)).Sum(r => r.Count);
+                actualCount = GameManager.Players.Count(p => IsWolfInWolfPhase(p.Role) && !p.RoleName.Contains("(盜賊)"));
+                roleDisplayName = "狼人陣營";
+            }
+            else
+            {
+                expectedCount = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == CurrentPhase.Role)?.Count ?? 0;
+                actualCount = GameManager.Players.Count(p => p.Role == CurrentPhase.Role && !p.RoleName.Contains("(盜賊)"));
+            }
+
+            if (actualCount != expectedCount)
+            {
+                errorMessage = $"請確認已指定 {expectedCount} 名 {roleDisplayName} 的座位！(目前已指派: {actualCount})";
+                return;
+            }
+        }
 
         if (CurrentPhase?.PhaseId == "Thief")
         {
-            var thiefPlayer = GameManager.Players.FirstOrDefault(p => p.Role == Role.Thief);
-            if (thiefPlayer == null)
-            {
-                errorMessage = "請先點選上方座位，指定哪一位玩家是盜賊！";
-                return;
-            }
             if (GameManager.BottomCards[0] == Role.Unknown || GameManager.BottomCards[1] == Role.Unknown)
             {
                 errorMessage = "請先選擇兩張盜賊的底牌！";
                 return;
             }
-            
+
             var card0 = GameManager.BottomCards[0];
             var card1 = GameManager.BottomCards[1];
             bool isWolf0 = IsWolfFaction(card0);
@@ -424,13 +457,13 @@
             {
                 forceWolfChoice = true;
                 thiefFinalRole = card0;
-                selectedThiefCardIndex = 0; // 強制鎖定左邊卡片
+                selectedThiefCardIndex = 0;
             }
             else if (!isWolf0 && isWolf1)
             {
                 forceWolfChoice = true;
                 thiefFinalRole = card1;
-                selectedThiefCardIndex = 1; // 強制鎖定右邊卡片
+                selectedThiefCardIndex = 1;
             }
             else
             {
@@ -449,12 +482,13 @@
             var targetPlayer = GameManager.Players.FirstOrDefault(p => p.SeatNumber == targetSeat);
             if (targetPlayer != null)
             {
-                seerResultIsBad = targetPlayer.Faction == "狼人" && targetPlayer.Role != Role.SnowWolf;
+                seerResultIsBad = targetPlayer.Faction == "狼人" && targetPlayer.Role != Role.HiddenWolf;
                 seerResultText = $"查驗【{targetSeat} 號玩家】：{(seerResultIsBad ? "狼人" : "好人")}";
                 showSeerResult = true;
                 return;
             }
         }
+
         NextStep();
     }
     

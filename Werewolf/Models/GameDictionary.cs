@@ -25,7 +25,6 @@ namespace Werewolf.Models
                 new RoleItem { Role = Role.Bomber, Name = "炸彈人", Faction = "好人", Description = "白天被票出局時炸死所有投他的玩家，夜間被刀可帶走隨機一狼。", Advantage = "沒人敢投票給你，狼人不想刀你。", Disadvantage = "場上幾乎全軍覆沒時狼人易趁虛而入。" },
                 new RoleItem { Role = Role.Villager, Name = "平民", Faction = "平民", Description = "無功能，天亮後必須分辨敵我並用投票跟隨神職人員走向勝利。", Advantage = "不會有什麼出錯，人數眾多。", Disadvantage = "無視野，容易成為扛推對象。" },
                 new RoleItem { Role = Role.Werewolf, Name = "狼人", Faction = "狼人", Description = "白天隱藏身分，每個晚上可以決定殺害一人。", Advantage = "晚上能享受處決的快感。", Disadvantage = "無其他技能。" },
-                new RoleItem { Role = Role.SnowWolf, Name = "雪狼", Faction = "狼人", Description = "參與處決，無法被預言家查驗，但騎士技能有效。", Advantage = "預言家查不到。", Disadvantage = "剋星是騎士。" },
                 new RoleItem { Role = Role.WolfKing, Name = "狼王", Faction = "狼人", Description = "死後發動技能開槍殺死一名玩家，被毒死或自爆則無法開槍。", Advantage = "死後能帶走一人。", Disadvantage = "明顯狼樣會被女巫悶槍。" },
                 new RoleItem { Role = Role.WhiteWolfKing, Name = "白狼王", Faction = "狼人", Description = "白天發言環節任一時候自爆並帶走一名玩家。", Advantage = "直接自爆帶走神職，不給發言。", Disadvantage = "一定要自爆。" },
                 new RoleItem { Role = Role.WolfBeauty, Name = "狼美人", Faction = "狼人", Description = "單獨魅惑一名好人，狼美人死後該玩家隨之殉情，無法自爆或自刀。", Advantage = "無懼毒藥與開槍，必定帶走一人。", Disadvantage = "老流氓和騎士是剋星。" },
