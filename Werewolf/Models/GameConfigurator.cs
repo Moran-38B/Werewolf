@@ -268,10 +268,10 @@ namespace Werewolf.Models
             SetRoleCount(_12_14, Role.Guard, 1);
             setups.Add(_12_14);
 
-            var _12_15 = new RoleSetup { SetupName = "12 人 狼王&邱比特/盜賊 - 2狼+狼王+4神(預言家+女巫+獵人+白痴)+邱比特/盜賊+4民", Roles = GetBaseRoles() };
+            var _12_15 = new RoleSetup { SetupName = "12 人 狼王&邱比特/盜賊 - 2狼+狼王+4神(預言家+女巫+獵人+白痴)+邱比特/盜賊+4/5民", Roles = GetBaseRoles() };
             SetRoleCount(_12_15, Role.Werewolf, 2);
             SetRoleCount(_12_15, Role.WolfKing, 1);
-            SetRoleCount(_12_15, Role.Villager, 4);
+            SetRoleCount(_12_15, Role.Villager, 5);
             SetRoleCount(_12_15, Role.Seer, 1);
             SetRoleCount(_12_15, Role.Witch, 1);
             SetRoleCount(_12_15, Role.Hunter, 1);

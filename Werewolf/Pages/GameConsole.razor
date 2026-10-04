@@ -53,7 +53,7 @@
                 
                 @if (thiefFinalRole != Role.Unknown)
                 {
-                    <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">確認完畢後請將平板交還給法官</MudText>
+                    <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">確認完畢後請將設備交還給法官</MudText>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="ConfirmThiefSelection">
                         確認選擇
                     </MudButton>
@@ -99,7 +99,7 @@
 
             <MudItem xs="12" md="9">
                 <MudCard Elevation="3" Class="pa-4">
-                    <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1"/> 玩家座位表 (點擊登記/取消身份)</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1"/> 玩家座位表</MudText>
 
                     <MudGrid Spacing="2" Class="mb-6">
                         @foreach (var player in GameManager.Players)
@@ -133,9 +133,10 @@
 
                     <MudDivider Class="my-4" />
                     
+                    @*盜賊的底牌設定*@
                     @if (CurrentPhase.PhaseId == "Thief")
                     {
-                        <MudText Typo="Typo.subtitle1" Class="mb-2 font-weight-bold">法官請設定底牌 (已過濾重複神職)：</MudText>
+                        <MudText Typo="Typo.subtitle1" Class="mb-2 font-weight-bold">法官請設定底牌：</MudText>
                         <div class="d-flex gap-4 mb-4">
                             @for (int i = 0; i < 2; i++)
                             {
@@ -198,7 +199,7 @@
                             <MudText Typo="Typo.body2" Color="Color.Error" Class="mb-2 font-weight-bold">@errorMessage</MudText>
                         }
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="OnNextStepClicked" Style="height: 56px; min-width: 150px;">
-                            @(CurrentPhase.PhaseId == "Thief" ? "玩家選牌" : "下一頁")
+                            @(CurrentPhase.PhaseId == "Thief" ? "玩家選牌" : "下一步")
                         </MudButton>
                     </div>
                 </MudCard>
@@ -324,6 +325,7 @@
         }
     }
 
+    // 
     private void OnSeatClicked(Player player)
     {
         if (CurrentPhase == null) return;
@@ -352,12 +354,22 @@
         }
     }
 
+    // 設定玩家座位
+    // 確保在分配角色時不會超過該角色的數量限制
     private void AssignRoleToPlayerSafely(Player player, Role targetRole)
     {
+        // 取得該角色的設定資訊
         var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == targetRole);
         if (roleInfo != null)
         {
+            // 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
+            // Role[] bottomCards = GameManager.BottomCards.Take(2).ToArray();
+            // if(bottomCards.Contains())
+
+            // 檢查目前已經分配的該角色數量
             int currentAssigned = GameManager.Players.Count(p => p.Role == targetRole);
+            
+            // 如果已經分配的數量達到上限，將第一個已分配該角色的玩家重置為未知身份
             if (currentAssigned >= roleInfo.Count)
             {
                 var firstSeat = GameManager.Players.FirstOrDefault(p => p.Role == targetRole);
@@ -393,7 +405,7 @@
         
         foreach (var r in GameManager.CurrentSetup.Roles.Where(x => x.Count > 0))
         {
-            if (r.Count == 1 && r.Role == otherRole) continue;
+            if ((r.Count == 1 && r.Role == otherRole) || r.Role == Role.Thief) continue;
             yield return r;
         }
     }
