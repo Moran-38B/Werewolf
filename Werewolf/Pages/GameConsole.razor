@@ -314,6 +314,7 @@
             else if (setupRole.Role == Role.Crow) {script = "魔術師請睜眼，你今天要交換的對象是？\n魔術師請閉眼。"; target = "交換對象"; maxT = 2;}
             else if (setupRole.Role == Role.Dreamcatcher) {script = "攝夢人請睜眼，請選擇要成為夢遊者的人。\n攝夢人請閉眼。";}
             else if (setupRole.Role == Role.Magician) { script = "魔術師請睜眼，請選擇兩名玩家進行交換。"; target = "交換對象"; maxT = 2; }
+
             else if (setupRole.Role == Role.Hunter || setupRole.Role == Role.Idiot || setupRole.Role == Role.Knight || setupRole.Role == Role.DemonHunter || setupRole.Role == Role.GraveKeeper || setupRole.Role == Role.BearTamer || setupRole.Role == Role.OldHooligan || setupRole.Role == Role.Bomber)
             {
                 script = $"{setupRole.Name}請睜眼。\n{setupRole.Name}請閉眼。";
