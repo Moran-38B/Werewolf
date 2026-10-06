@@ -13,5 +13,8 @@ namespace Werewolf.Models
 
         // 同守同救存活：true 為存活，false 為奶穿雙死
         public bool DoubleDeadValid { get; set; } = false;
+
+		// 自動播放語音
+		public bool AutoPlayVioce { get; set; } = true;
     }
 }
