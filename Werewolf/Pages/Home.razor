@@ -109,6 +109,7 @@
         <MudSwitch @bind-Value="GlobalRule.EnableSheriff" Color="Color.Success" Label="啟用警長" Class="mb-2" />
         <MudSwitch @bind-Value="GlobalRule.WitchCanSaveSelf" Color="Color.Success" Label="女巫首夜可自救" Class="mb-2" />
         <MudSwitch @bind-Value="GlobalRule.DoubleDeadValid" Color="Color.Warning" Label="同守同救存活 (關閉則視為奶穿雙死)" />
+				<MudSwitch @bind-Value="GlobalRule.AutoPlayVoice" Color="Color.Warning" Label="自動播放遊戲語音">
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="() => isSettingsOpen = false">完成設定</MudButton>
@@ -169,6 +170,8 @@
                 <li>警長：@(GlobalRule.EnableSheriff ? "啟用" : "關閉")</li>
                 <li>女巫首夜自救：@(GlobalRule.WitchCanSaveSelf ? "開啟" : "關閉")</li>
                 <li>同守同救：@(GlobalRule.DoubleDeadValid ? "存活" : "奶穿雙死")</li>
+								<br/>
+								<li>自動播放語音：@(GlobalRule.AutoPlayVoice ? "啟用" : "停用")</li>
             </ul>
         </MudPaper>
     </DialogContent>
