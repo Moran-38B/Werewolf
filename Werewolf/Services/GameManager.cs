@@ -10,6 +10,13 @@ namespace Werewolf.Services
         public RoleSetup CurrentSetup { get; set; } = new();
         
         public List<Player> Players { get; set; } = new();
+
+        //public List<Role> CustomNightOrder { get; set; } = new List<Role>
+        //{
+        //    Role.Thief, Role.HiddenWolf, Role.Gargoyle, Role.Werewolf,
+        //    Role.Seer, Role.Witch, Role.Guard, Role.Hunter, Role.Knight, Role.BearTamer, Role.DemonHunter,
+        //    Role.Magician, Role.Dreamcatcher, Role.Crow, Role.Silencer, Role.GraveKeeper, Role.Idiot, Role.Bomber, Role.OldHooligan
+        //};
         
         // 底牌改存 Role Enum
         public List<Role> BottomCards { get; set; } = new();
@@ -42,5 +49,9 @@ namespace Werewolf.Services
                 BottomCards.Add(Role.Unknown);
             }
         }
+
+        public int CurrentDay { get; set; } = 0;
+        public bool IsNight { get; set; } = true;
+        //public string Current
     }
 }

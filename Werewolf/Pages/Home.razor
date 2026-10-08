@@ -24,13 +24,20 @@
                     </MudSelect>
                 </MudItem>
 
-                <MudItem xs="12" md="4" lg="3" Class="d-flex gap-3 mt-md-2">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px;" Class="flex-grow-1">
-                        遊戲規則
-                    </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="OpenReadyDialog" Style="height: 56px;" Class="flex-grow-1">
-                        完成設定
-                    </MudButton>
+                <MudItem xs="12" md="4" lg="3" Class="d-flex flex-column justify-center mt-md-2">
+                    <div class="d-flex gap-3">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Settings" OnClick="OpenSettings" Style="height: 56px;" Class="flex-grow-1">
+                            遊戲規則
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="OpenReadyDialog" Style="height: 56px;" Class="flex-grow-1">
+                            產生座位
+                        </MudButton>
+                    </div>
+                    @* 防呆錯誤訊息顯示區 *@
+                    @if (!string.IsNullOrEmpty(setupErrorMessage))
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Error" Class="font-weight-bold mt-2 text-end">@setupErrorMessage</MudText>
+                    }
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -60,7 +67,7 @@
                     <MudGrid>
                         @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "狼人"))
                         {
-                            if(role.Role == Role.Werewolf)
+                            if (role.Role == Role.Werewolf)
                             {
                                 <MudItem xs="6" sm="4">
                                     <MudNumericField @bind-Value="role.Count" Label="@role.Name" Min="0" Max="10" Variant="Variant.Outlined" Margin="Margin.Dense" InputMode="@(InputMode.none)" />
@@ -101,15 +108,37 @@
         <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Gavel" Class="mr-3" /> 遊戲規則設定</MudText>
     </TitleContent>
     <DialogContent>
-        <MudRadioGroup @bind-Value="GlobalRule.IsKillSide" T="bool" Class="mb-4">
-            <MudText Typo="Typo.subtitle2" Class="mb-1">勝利條件</MudText>
-            <MudRadio Value="@true" Color="Color.Primary">屠邊 (殺光神職 或 殺光平民)</MudRadio>
-            <MudRadio Value="@false" Color="Color.Error">屠城 (殺光所有好人)</MudRadio>
+        <MudRadioGroup @bind-Value="GlobalRule.IsKillSide" T="bool" Class="mb-2">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.subtitle1" Class="mb-1">勝利條件</MudText>
+                <MudRadio Value="@true" Color="Color.Primary">屠邊 (殺光神職 或 殺光平民)</MudRadio>
+                <MudRadio Value="@false" Color="Color.Error">屠城 (殺光所有好人)</MudRadio>
+            </MudStack>
         </MudRadioGroup>
+        <MudText Typo="Typo.subtitle1" Class="mb-1">遊戲設定</MudText>
         <MudSwitch @bind-Value="GlobalRule.EnableSheriff" Color="Color.Success" Label="啟用警長" Class="mb-2" />
         <MudSwitch @bind-Value="GlobalRule.WitchCanSaveSelf" Color="Color.Success" Label="女巫首夜可自救" Class="mb-2" />
         <MudSwitch @bind-Value="GlobalRule.DoubleDeadValid" Color="Color.Warning" Label="同守同救存活 (關閉則視為奶穿雙死)" />
-        <MudSwitch @bind-Value="GlobalRule.AutoPlayVoice" Color="Color.Warning" Label="自動播放遊戲語音">
+        <br />
+
+        <MudRadioGroup @bind-Value="GlobalRule.HiddenWolfMode" T="bool" Class="mb-2">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.subtitle1" Class="mb-1">隱狼模式</MudText>
+                <MudRadio Value="true" Color="Color.Primary">晚上與狼人一同睜眼，但被騎士選擇為決鬥對象時一樣會死</MudRadio>
+                <MudRadio Value="false" Color="Color.Success">晚上不跟狼人睜眼，好處是不受騎士技能影響</MudRadio>
+            </MudStack>
+        </MudRadioGroup>
+
+        <MudRadioGroup @bind-Value="GlobalRule.HiddenWolfMode_" T="bool" Class="ms-8" Disabled="GlobalRule.HiddenWolfMode">
+            <MudStack Spacing="0">
+                <MudRadio Value="true" Color="Color.Primary" Class="ms-2">若場上僅剩隱狼一名狼人時，則狼人失敗</MudRadio>
+                <MudRadio Value="false" Color="Color.Success" Class="ms-2">場上所有狼隊友均被淘汰後，隱狼可開始殺人，但同時也會被預言家查驗出來</MudRadio>
+            </MudStack>
+        </MudRadioGroup>
+
+        <br />
+        <MudText Typo="Typo.subtitle1" Class="mb-1">法官設定</MudText>
+        <MudSwitch @bind-Value="GlobalRule.AutoPlayVioce" Color="Color.Success" Label="自動播放遊戲語音" />
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="() => isSettingsOpen = false">完成設定</MudButton>
@@ -170,8 +199,8 @@
                 <li>警長：@(GlobalRule.EnableSheriff ? "啟用" : "關閉")</li>
                 <li>女巫首夜自救：@(GlobalRule.WitchCanSaveSelf ? "開啟" : "關閉")</li>
                 <li>同守同救：@(GlobalRule.DoubleDeadValid ? "存活" : "奶穿雙死")</li>
-                <br/>
-				<li>自動播放語音：@(GlobalRule.AutoPlayVoice ? "啟用" : "停用")</li>
+                <br />
+                <li>自動播放語音：@(GlobalRule.AutoPlayVioce ? "啟用" : "停用")</li>
             </ul>
         </MudPaper>
     </DialogContent>
@@ -194,6 +223,8 @@
     private bool isReadyDialogOpen = false;
     private string readyErrorMessage = "";
     private DialogOptions dialogOptions = new() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+
+    private string setupErrorMessage = ""; // 遊戲配置防呆訊息
 
     protected override void OnInitialized()
     {
@@ -225,6 +256,31 @@
     private void OpenReadyDialog()
     {
         if (TotalPlayers <= 0) return;
+
+        // === 防呆驗證開始 ===
+        bool hasWolf = CurrentSetup.Roles.Any(r => r.Faction == "狼人" && r.Count > 0);
+        bool hasVillager = CurrentSetup.Roles.Any(r => r.Faction == "平民" && r.Count > 0);
+        bool hasGod = CurrentSetup.Roles.Any(r => r.Faction == "神職" && r.Count > 0);
+        bool hasGood = hasVillager || hasGod; // 好人陣營 (平民或神職)
+
+        if (!hasWolf)
+        {
+            setupErrorMessage = "配置錯誤：必須至少包含一名「狼人陣營」角色！";
+            return;
+        }
+        if (!hasGood)
+        {
+            setupErrorMessage = "配置錯誤：必須至少包含一名「好人陣營」(平民或神職)！";
+            return;
+        }
+        if (GlobalRule.IsKillSide && (!hasVillager || !hasGod))
+        {
+            setupErrorMessage = "配置錯誤：屠邊局必須同時包含「平民」與「神職」，否則無法達成勝利條件！";
+            return;
+        }
+        // === 防呆驗證結束 ===
+
+        setupErrorMessage = ""; // 驗證通過，清空錯誤訊息
 
         GameManager.GlobalRule = this.GlobalRule;
         GameManager.CurrentSetup = this.CurrentSetup;

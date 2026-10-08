@@ -60,6 +60,36 @@ namespace Werewolf.Models
         {
             var setups = new List<RoleSetup>();
 
+            var test = new RoleSetup { SetupName = "Test", Roles = GetBaseRoles() };
+            SetRoleCount(test, Role.Villager, 1);
+            SetRoleCount(test, Role.OldHooligan, 1);
+            SetRoleCount(test, Role.Werewolf, 1);
+            SetRoleCount(test, Role.WolfKing, 1);
+            SetRoleCount(test, Role.WhiteWolfKing, 1);
+            SetRoleCount(test, Role.GhostRider, 1);
+            SetRoleCount(test, Role.Gargoyle, 1);
+            SetRoleCount(test, Role.WolfBeauty, 1);
+            SetRoleCount(test, Role.BloodMoonApostle, 1);
+            SetRoleCount(test, Role.HiddenWolf, 1);
+            SetRoleCount(test, Role.Seer, 1);
+            SetRoleCount(test, Role.Witch, 1);
+            SetRoleCount(test, Role.Hunter, 1);
+            SetRoleCount(test, Role.Guard, 1);
+            SetRoleCount(test, Role.Knight, 1);
+            SetRoleCount(test, Role.Idiot, 1);
+            SetRoleCount(test, Role.Silencer, 1);
+            SetRoleCount(test, Role.BearTamer, 1);
+            SetRoleCount(test, Role.GraveKeeper, 1);
+            SetRoleCount(test, Role.DemonHunter, 1);
+            SetRoleCount(test, Role.Dreamcatcher, 1);
+            SetRoleCount(test, Role.Magician, 1);
+            SetRoleCount(test, Role.Crow, 1);
+            SetRoleCount(test, Role.Bomber, 1);
+            SetRoleCount(test, Role.Cupid, 1);
+            SetRoleCount(test, Role.WildChild, 1);
+            SetRoleCount(test, Role.Thief, 1);
+            setups.Add(test);
+
             var _6_1 = new RoleSetup { SetupName = "6 人 明牌場 - 2狼+2神(預言家+獵人)+2民", Roles = GetBaseRoles() };
             SetRoleCount(_6_1, Role.Werewolf, 2);
             SetRoleCount(_6_1, Role.Seer, 1);

@@ -18,7 +18,7 @@
         {
             <div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
                 <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">請確認你的最終身份</MudText>
-                
+
                 @if (forceWolfChoice)
                 {
                     <MudText Typo="Typo.h6" Style="color: #FF5252;" Class="mb-4 font-weight-bold">※ 底牌包含狼人陣營，已自動強制選擇</MudText>
@@ -34,23 +34,23 @@
                         var loopIndex = i; // 避免 Blazor 迴圈變數的閉包問題
                         var cardRole = GameManager.BottomCards[loopIndex];
                         if (cardRole == Role.Unknown) continue;
-                        
+
                         bool isThisWolf = IsWolfFaction(cardRole);
                         bool isDisabled = forceWolfChoice && !isThisWolf;
                         bool isSelected = selectedThiefCardIndex == loopIndex;
-                        
+
                         <div style="width: 35vw; max-width: 350px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: @(isSelected ? "6px solid #FFD700" : "4px solid #333"); cursor: @(isDisabled ? "not-allowed" : "pointer"); transition: 0.2s; box-shadow: @(isSelected ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none"); opacity: @(isDisabled ? "0.3" : "1");"
                              @onclick="@(() => { if (!forceWolfChoice) { thiefFinalRole = cardRole; selectedThiefCardIndex = loopIndex; } })">
-                            
+
                             <img src="@($"images/roles/{cardRole}.png")" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            
+
                             <div style="display: none; width: 100%; height: 100%; background-color: #444; color: white; justify-content: center; align-items: center; font-size: 2rem;">
                                 圖片遺失
                             </div>
                         </div>
                     }
                 </div>
-                
+
                 @if (thiefFinalRole != Role.Unknown)
                 {
                     <MudText Typo="Typo.body1" Style="color: #FFD700;" Class="mt-8 mb-3 font-weight-bold">確認完畢後請將設備交還給法官</MudText>
@@ -77,15 +77,15 @@
         <MudGrid Spacing="4">
             <MudItem xs="12" md="3">
                 <MudCard Elevation="3" Class="pa-4 h-100">
-                    <MudText Typo="Typo.h6" Class="mb-3"><MudIcon Icon="@Icons.Material.Filled.FormatListNumbered" Class="mr-2 mb-n1"/> 職業順序</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-3"><MudIcon Icon="@Icons.Material.Filled.FormatListNumbered" Class="mr-2 mb-n1" /> 職業順序</MudText>
                     <MudTimeline TimelinePosition="TimelinePosition.Start">
                         @for (int i = 0; i < NightPhases.Count; i++)
                         {
                             var phase = NightPhases[i];
                             var isActive = i == currentPhaseIndex;
                             var isPast = i < currentPhaseIndex;
-                            <MudTimelineItem Color="@(isActive ? Color.Primary : (isPast ? Color.Success : Color.Default))" Size="Size.Small">
-                                <MudText Typo="@(isActive ? Typo.subtitle1 : Typo.body2)" Class="@(isActive ? "font-weight-bold mud-primary-text" : "mud-text-secondary")">@phase.RoleName</MudText>
+                            <MudTimelineItem Color="@(isActive? Color.Primary: (isPast ? Color.Success : Color.Default))" Size="Size.Small">
+                                <MudText Typo="@(isActive? Typo.subtitle1: Typo.body2)" Class="@(isActive ? "font-weight-bold mud-primary-text" : "mud-text-secondary")">@phase.RoleName</MudText>
                             </MudTimelineItem>
                         }
                     </MudTimeline>
@@ -99,7 +99,7 @@
 
             <MudItem xs="12" md="9">
                 <MudCard Elevation="3" Class="pa-4">
-                    <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1"/> 玩家座位表</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1" /> 玩家座位表</MudText>
 
                     <MudGrid Spacing="2" Class="mb-6">
                         @foreach (var player in GameManager.Players)
@@ -113,7 +113,7 @@
                             string cursorClass = isLocked ? "cursor-not-allowed" : "cursor-pointer";
 
                             <MudItem xs="4" sm="3" md="2">
-                                <MudCard Elevation="@(isSelected || isTargeted ? 4 : 1)" 
+                                <MudCard Elevation="@(isSelected || isTargeted ? 4 : 1)"
                                          Class="@($"pa-3 text-center {cursorClass} {(isSelected ? "bg-primary text-white" : isLocked ? "bg-dark text-white opacity-75" : "mud-theme-dark")}")"
                                          Style="@($"border-radius: 12px; border: 2px solid {borderColor}; box-shadow: {boxShadow}; height: 90px; transition: 0.2s;")"
                                          @onclick="@(() => OnSeatClicked(player))">
@@ -132,7 +132,7 @@
                     </MudGrid>
 
                     <MudDivider Class="my-4" />
-                    
+
                     @*盜賊的底牌設定*@
                     @if (CurrentPhase.PhaseId == "Thief")
                     {
@@ -168,7 +168,7 @@
                             <MudSwitch @bind-Value="witchUsedSave" Color="Color.Success" Label="使用解藥" Disabled="@(witchPoisonTarget > 0)" />
                             <MudText Typo="Typo.caption" Class="mud-text-secondary">※ 守衛與女巫若守護/解救同一人，該玩家死亡。</MudText>
                         </MudCard>
-                        
+
                         <MudText Typo="Typo.subtitle1" Class="mb-2 mt-2 font-weight-bold text-error">使用毒藥 (與解藥不能同時使用)：</MudText>
                         <div class="d-flex gap-2 flex-wrap">
                             @foreach (var p in GameManager.Players)
@@ -192,7 +192,7 @@
                             }
                         </div>
                     }
-                    
+
                     <div class="d-flex flex-column align-end mt-6">
                         @if (!string.IsNullOrEmpty(errorMessage))
                         {
@@ -211,7 +211,7 @@
 
 <MudDialog @bind-Visible="isEncyclopediaOpen" Options="new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true }">
     <TitleContent>
-        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.MenuBook" Class="mr-2 mb-n1"/> 當局角色百科</MudText>
+        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.MenuBook" Class="mr-2 mb-n1" /> 當局角色百科</MudText>
     </TitleContent>
     <DialogContent>
         <MudExpansionPanels MultiExpansion="true" Elevation="0">
@@ -231,7 +231,7 @@
 <MudDialog @bind-Visible="showSeerResult" Options="new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true }">
     <TitleContent><MudText Typo="Typo.h6">預言家查驗結果</MudText></TitleContent>
     <DialogContent>
-        <MudText Typo="Typo.h5" Class="text-center my-4 font-weight-bold" Color="@(seerResultIsBad ? Color.Error : Color.Info)">
+        <MudText Typo="Typo.h5" Class="text-center my-4 font-weight-bold" Color="@(seerResultIsBad? Color.Error: Color.Info)">
             @seerResultText
         </MudText>
     </DialogContent>
@@ -241,6 +241,7 @@
 </MudDialog>
 
 @code {
+    // private GameRule gameRule =
     private bool isEncyclopediaOpen = false;
     private bool showSeerResult = false;
     private string seerResultText = "";
@@ -259,7 +260,10 @@
     private int witchPoisonTarget = -1;
 
     private bool isPlayerSelectingThiefCard = false;
-    private bool forceWolfChoice = false; 
+    private bool forceWolfChoice = false;
+
+    private GameRule GameRule => GameManager.GlobalRule;
+    private List<Player> Players => GameManager.Players;
 
     protected override void OnInitialized()
     {
@@ -279,14 +283,17 @@
     {
         NightPhases.Clear();
         var defaultOrder = new List<Role> {
-            Role.Thief, Role.Cupid, Role.WildChild,
-            Role.Werewolf, Role.HiddenWolf, Role.Gargoyle,
-            Role.Witch, Role.Seer, Role.Guard, Role.Magician, Role.Dreamcatcher, Role.Crow, Role.Silencer, Role.GraveKeeper
+            Role.Thief, Role.HiddenWolf, Role.Gargoyle, Role.Werewolf,
+            Role.Seer, Role.Witch, Role.Guard, Role.Magician, Role.Dreamcatcher, Role.Crow, Role.Silencer, Role.GraveKeeper,
+            Role.Cupid, Role.WildChild,
         };
 
         var rolesInPlay = GameManager.CurrentSetup.Roles
-            .Where(r => r.Count > 0 && r.Role != Role.Villager && r.Role != Role.OldHooligan && r.Role != Role.Idiot && r.Role != Role.Knight && r.Role != Role.BearTamer && r.Role != Role.DemonHunter)
+            .Where(x=>x.Count > 0 && x.Role != Role.Villager)
+            // .Where(r => r.Count > 0 && r.Role != Role.Villager && r.Role != Role.OldHooligan && r.Role != Role.Idiot && r.Role != Role.Knight && r.Role != Role.BearTamer && r.Role != Role.DemonHunter)
             .OrderBy(r => { var idx = defaultOrder.IndexOf(r.Role); return idx == -1 ? 999 : idx; }).ToList();
+
+        //Update: 添加各職業使用技能判斷
 
         if (rolesInPlay.Any(r => r.Role == Role.Thief))
         {
@@ -296,6 +303,7 @@
         foreach (var setupRole in rolesInPlay)
         {
             if (setupRole.Role == Role.Thief || IsSpecialWolf(setupRole.Role)) continue;
+            else if (setupRole.Role == Role.HiddenWolf && GameRule.HiddenWolfMode) continue;
 
             string script = $"{setupRole.Name}請睜眼，請確認你的行動。";
             string target = "行動目標";
@@ -303,16 +311,31 @@
             string pId = setupRole.Role.ToString();
 
             if (setupRole.Role == Role.Werewolf) { script = "狼人請睜眼，請確認彼此身份，請選擇你們今晚的擊殺對象。\n狼人請閉眼。"; target = "擊殺對象"; }
-            else if (setupRole.Role == Role.Gargoyle) { script = "石像鬼請睜眼，請選擇你要查驗的對象，若其他狼人皆已死亡，請選擇擊殺對象。"; target = "查驗/擊殺對象"; }
-            else if (setupRole.Role == Role.HiddenWolf) { script = "隱狼請睜眼，若其他狼人皆已死亡，請選擇擊殺對象。"; target = "擊殺對象"; }
+            else if (setupRole.Role == Role.Gargoyle)
+            {
+                target = "查驗對象";
+                script = "石像鬼請睜眼，請選擇你要查驗的對象，若其他狼人皆已死亡，請選擇擊殺對象。";
+            }
+            else if (setupRole.Role == Role.HiddenWolf)
+            {
+                script = "隱狼請睜眼。\n隱狼請閉眼。";
+                maxT = 0;
+                target = "";
+
+                if (Players.Where(x => x.Faction == "狼人" && x.Role == Role.Gargoyle && x.Role == Role.HiddenWolf).Count() == 0)
+                {
+                    //Update: 法官告知隱狼 場上僅剩他一名狼人
+                }
+            }
+
             else if (setupRole.Role == Role.Cupid) { script = "邱比特請睜眼，請選擇你要連線的兩名玩家。"; target = "連線對象"; maxT = 2; }
             else if (setupRole.Role == Role.Seer) { script = "預言家請睜眼，請選擇你要查驗的對象，他的身分是...\n預言家請閉眼。"; target = "查驗對象"; }
             else if (setupRole.Role == Role.Witch) { script = "女巫請睜眼，今晚他被殺死了，你要使用解藥嗎？你要使用毒藥嗎？你要使用的對象是？\n女巫請閉眼。"; target = ""; maxT = 0; pId = "Witch"; }
             else if (setupRole.Role == Role.Guard) { script = "守衛請睜眼，你今晚要守護的對象是？\n守衛請閉眼。"; target = "守護對象"; }
-            else if (setupRole.Role == Role.Silencer) {script = "禁言長老請睜眼，請選擇你要禁言的對象。\n禁言長老請閉眼。"; target = "禁言對象";}
-            else if (setupRole.Role == Role.Crow) {script = "烏鴉請睜眼，你今天要詛咒的對象是？\n烏鴉請閉眼。"; target = "詛咒對象";}
-            else if (setupRole.Role == Role.Crow) {script = "魔術師請睜眼，你今天要交換的對象是？\n魔術師請閉眼。"; target = "交換對象"; maxT = 2;}
-            else if (setupRole.Role == Role.Dreamcatcher) {script = "攝夢人請睜眼，請選擇要成為夢遊者的人。\n攝夢人請閉眼。";}
+            else if (setupRole.Role == Role.Silencer) { script = "禁言長老請睜眼，請選擇你要禁言的對象。\n禁言長老請閉眼。"; target = "禁言對象"; }
+            else if (setupRole.Role == Role.Crow) { script = "烏鴉請睜眼，你今天要詛咒的對象是？\n烏鴉請閉眼。"; target = "詛咒對象"; }
+            else if (setupRole.Role == Role.Crow) { script = "魔術師請睜眼，你今天要交換的對象是？\n魔術師請閉眼。"; target = "交換對象"; maxT = 2; }
+            else if (setupRole.Role == Role.Dreamcatcher) { script = "攝夢人請睜眼，請選擇要成為夢遊者的人。\n攝夢人請閉眼。"; }
             else if (setupRole.Role == Role.Magician) { script = "魔術師請睜眼，請選擇兩名玩家進行交換。"; target = "交換對象"; maxT = 2; }
 
             else if (setupRole.Role == Role.Hunter || setupRole.Role == Role.Idiot || setupRole.Role == Role.Knight || setupRole.Role == Role.DemonHunter || setupRole.Role == Role.GraveKeeper || setupRole.Role == Role.BearTamer || setupRole.Role == Role.OldHooligan || setupRole.Role == Role.Bomber)
@@ -326,7 +349,7 @@
         }
     }
 
-    // 
+    //
     private void OnSeatClicked(Player player)
     {
         if (CurrentPhase == null) return;
@@ -347,9 +370,9 @@
             {
                 roleToAssign = activeSpecialWolf;
             }
-            
+
             AssignRoleToPlayerSafely(player, roleToAssign);
-            
+
             if (currentTargetSeats.Contains(player.SeatNumber)) currentTargetSeats.Remove(player.SeatNumber);
             if (witchPoisonTarget == player.SeatNumber) witchPoisonTarget = -1;
         }
@@ -363,13 +386,13 @@
         var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == targetRole);
         if (roleInfo != null)
         {
-            // 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
+            //Update: 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
             // Role[] bottomCards = GameManager.BottomCards.Take(2).ToArray();
             // if(bottomCards.Contains())
 
             // 檢查目前已經分配的該角色數量
             int currentAssigned = GameManager.Players.Count(p => p.Role == targetRole);
-            
+
             // 如果已經分配的數量達到上限，將第一個已分配該角色的玩家重置為未知身份
             if (currentAssigned >= roleInfo.Count)
             {
@@ -403,7 +426,7 @@
     {
         var otherIndex = index == 0 ? 1 : 0;
         var otherRole = GameManager.BottomCards[otherIndex];
-        
+
         foreach (var r in GameManager.CurrentSetup.Roles.Where(x => x.Count > 0))
         {
             if ((r.Count == 1 && r.Role == otherRole) || r.Role == Role.Thief) continue;
@@ -424,7 +447,7 @@
 
     private bool HasSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Any(r => IsSpecialWolf(r.Role) && r.Count > 0);
     private List<RoleItem> GetSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Where(r => IsSpecialWolf(r.Role) && r.Count > 0).ToList();
-    private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle ;
+    private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle;
 
     private void OnNextStepClicked()
     {
@@ -507,7 +530,7 @@
 
         NextStep();
     }
-    
+
     private void ConfirmThiefSelection()
     {
         var thiefPlayer = GameManager.Players.FirstOrDefault(p => p.Role == Role.Thief);
@@ -518,9 +541,9 @@
             thiefPlayer.RoleName = $"{rInfo?.Name} (盜賊)";
             thiefPlayer.Faction = rInfo?.Faction ?? "未知";
         }
-        
+
         isPlayerSelectingThiefCard = false;
-        NextStep(); 
+        NextStep();
     }
 
     private void ConfirmSeerResult()
@@ -544,7 +567,7 @@
         }
         else
         {
-            NavigationManager.NavigateTo("/day"); 
+            NavigationManager.NavigateTo("/day");
         }
     }
 
@@ -561,7 +584,7 @@
         public Role Role { get; set; }
         public string RoleName { get; set; } = "";
         public string ScriptText { get; set; } = "";
-        public string TargetLabel { get; set; } = ""; 
+        public string TargetLabel { get; set; } = "";
         public int MaxTargets { get; set; } = 1;
     }
 }
