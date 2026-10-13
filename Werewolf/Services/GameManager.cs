@@ -50,7 +50,7 @@ namespace Werewolf.Services
             }
         }
 
-        public int CurrentDay { get; set; } = 0;
+        public int CurrentDay { get; set; } = 1;
         public bool IsNight { get; set; } = true;
         //public string Current
     }

@@ -61,9 +61,9 @@ namespace Werewolf.Models
             var setups = new List<RoleSetup>();
 
             var test = new RoleSetup { SetupName = "Test", Roles = GetBaseRoles() };
-            SetRoleCount(test, Role.Villager, 1);
-            SetRoleCount(test, Role.OldHooligan, 1);
-            SetRoleCount(test, Role.Werewolf, 1);
+            SetRoleCount(test, Role.Villager, 2);
+            SetRoleCount(test, Role.OldHooligan, 2);
+            SetRoleCount(test, Role.Werewolf, 2);
             SetRoleCount(test, Role.WolfKing, 1);
             SetRoleCount(test, Role.WhiteWolfKing, 1);
             SetRoleCount(test, Role.GhostRider, 1);
