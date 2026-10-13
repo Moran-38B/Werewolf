@@ -421,14 +421,22 @@
         var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == targetRole);
         if (roleInfo != null)
         {
-            //Update: 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
-            Role[] cards = GameManager.BottomCards.Take(2).ToArray();
-            if (cards.Contains(targetRole))
-                return;
-
             // 檢查目前已經分配的該角色數量
             int currentAssigned = GameManager.Players.Count(p => p.Role == targetRole);
 
+            //Update: 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
+            Role[] cards = GameManager.BottomCards.Take(2).ToArray();
+            //if (cards.Contains(targetRole))
+            //    return;
+            int count = GameManager.CurrentSetup.Roles.Where(x=>x.Role == targetRole);
+            foreach(var i in cards){
+                if (i == targetRole)
+                    count--;
+            }
+            if(currentAssigned >= count)
+                return;
+
+            
             // 如果已經分配的數量達到上限，將第一個已分配該角色的玩家重置為未知身份
             if (currentAssigned >= roleInfo.Count)
             {
