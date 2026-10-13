@@ -428,7 +428,7 @@
             Role[] cards = GameManager.BottomCards.Take(2).ToArray();
             //if (cards.Contains(targetRole))
             //    return;
-            int count = GameManager.CurrentSetup.Roles.Where(x=>x.Role == targetRole);
+            int count = GameManager.CurrentSetup.Roles.Count(x=>x.Role == targetRole);
             foreach(var i in cards){
                 if (i == targetRole)
                     count--;
