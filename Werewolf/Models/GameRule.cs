@@ -18,11 +18,11 @@ namespace Werewolf.Models
 
         // True: 晚上與狼人一同睜眼，但被騎士選擇為決鬥對象時一樣會死
         // False: 晚上不跟狼人睜眼，好處是不受騎士技能影響
-        public bool HiddenWolfMode { get; set; } = true;
+        public bool HiddenWolfMode { get; set; } = false;
         // HiddenWolfMode == false
         // True: 若場上僅剩隱狼一名狼人時，則狼人失敗
         // False: 場上所有狼隊友均被淘汰後，隱狼可開始殺人，但同時也會被預言家查驗出來
-        public bool HiddenWolfMode_ { get; set; } = true;
+        public bool HiddenWolfMode_ { get; set; } = false;
 
 		// 自動播放語音
 		public bool AutoPlayVioce { get; set; } = true;
