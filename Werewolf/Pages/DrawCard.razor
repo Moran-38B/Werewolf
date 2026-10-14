@@ -8,6 +8,7 @@
 
     @if (currentlyRevealedCard == null)
     {
+        <br/>
         <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">玩家抽牌階段</MudText>
         <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="mb-6 font-weight-bold">請 【 @currentDrawingSeat 】 號玩家選擇卡牌</MudText>
 
@@ -156,9 +157,9 @@
             return "width: 18vw; min-width: 180px; max-width: 220px;";
         else if (totalCards <= 12)
             return "width: 14vw; min-width: 160px; max-width: 200px;";
-        else if (totalCards <= 15)
-            return "width: 11vw; min-width: 130px; max-width: 170px;";
+        else if (totalCards <= 16)
+            return "width: 11vw; min-width: 140px; max-width: 180px;";
         else
-            return "width: 9vw; min-width: 110px; max-width: 150px;"; // 16人以上大局，縮小卡牌
+            return "width: 9vw; min-width: 120px; max-width: 160px;"; // 16人以上大局，縮小卡牌
     }
 }
