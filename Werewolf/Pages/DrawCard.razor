@@ -153,12 +153,12 @@
         int totalCards = DeckOnTable.Count;
 
         if (totalCards <= 8)
-            return "width: 18vw; min-width: 280px; max-width: 320px;";
+            return "width: 18vw; min-width: 200px; max-width: 240px;";
         else if (totalCards <= 12)
-            return "width: 14vw; min-width: 240px; max-width: 280px;";
+            return "width: 14vw; min-width: 160px; max-width: 200px;";
         else if (totalCards <= 15)
-            return "width: 11vw; min-width: 200px; max-width: 240px;";
+            return "width: 11vw; min-width: 120px; max-width: 160px;";
         else
-            return "width: 9vw; min-width: 160px; max-width: 200px;"; // 16人以上大局，縮小卡牌
+            return "width: 9vw; min-width: 80px; max-width: 120px;"; // 16人以上大局，縮小卡牌
     }
 }
