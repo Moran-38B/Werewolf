@@ -2,7 +2,8 @@
 @using Werewolf.Models
 @using Werewolf.Services
 @inject GameManager GameManager
-@inject NavigationManager NavigationManager
+@inject NavigationManager NavigationManager 
+
 
 <div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
 
@@ -148,18 +149,20 @@
         public bool IsPicked { get; set; } = false;
     }
 
-    // 根據總牌數動態決定卡牌大小
+    // 根據「總牌數」與「螢幕大小(vw)」動態決定卡牌大小
     private string GetCardSizeStyle()
     {
         int totalCards = DeckOnTable.Count;
 
+        // 使用 CSS clamp(最小值, 螢幕寬度比例 vw, 最大值)
+        // 這樣在 iPad (大螢幕) 或 手機 (小螢幕) 上，都會在合理的範圍內自動縮放
         if (totalCards <= 8)
-            return "width: 18vw; min-width: 180px; max-width: 220px;";
+            return "width: clamp(120px, 22vw, 200px);";
         else if (totalCards <= 12)
-            return "width: 14vw; min-width: 160px; max-width: 200px;";
+            return "width: clamp(100px, 16vw, 180px);";
         else if (totalCards <= 16)
-            return "width: 11vw; min-width: 140px; max-width: 180px;";
+            return "width: clamp(90px, 13vw, 170px);";
         else
-            return "width: 9vw; min-width: 120px; max-width: 160px;"; // 16人以上大局，縮小卡牌
+            return "width: clamp(70px, 10vw, 150px);"; // 16 人以上大局
     }
 }
