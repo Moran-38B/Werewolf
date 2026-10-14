@@ -10,11 +10,11 @@ namespace Werewolf.Models
             return new List<RoleItem>
             {
                 // 平民陣營
-                new RoleItem { Role = Role.Villager, Name = "平民", Faction = "平民" },
-                new RoleItem { Role = Role.OldHooligan, Name = "老流氓", Faction = "平民" },
+                new RoleItem { Role = Role.Villager, Name = "平民", Faction = "平民", onlyOne = false },
+                new RoleItem { Role = Role.OldHooligan, Name = "老流氓", Faction = "平民", onlyOne = false },
                 
                 // 狼人陣營
-                new RoleItem { Role = Role.Werewolf, Name = "狼人", Faction = "狼人" },
+                new RoleItem { Role = Role.Werewolf, Name = "狼人", Faction = "狼人", onlyOne = false },
                 new RoleItem { Role = Role.WolfKing, Name = "狼王", Faction = "狼人" },
                 new RoleItem { Role = Role.WhiteWolfKing, Name = "白狼王", Faction = "狼人" },
                 new RoleItem { Role = Role.GhostRider, Name = "惡靈騎士", Faction = "狼人" },

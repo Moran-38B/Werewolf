@@ -5,6 +5,7 @@ namespace Werewolf.Models
         public Role Role { get; set; } = Role.Unknown;
         public string Name { get; set; } = "";
         public string Faction { get; set; } = "";
+        public bool onlyOne { get; set; } = true;
         public int Count { get; set; } = 0;
         
         // 百科擴充屬性

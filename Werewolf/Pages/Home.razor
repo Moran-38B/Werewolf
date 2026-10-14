@@ -30,7 +30,7 @@
                             遊戲規則
                         </MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="OpenReadyDialog" Style="height: 56px;" Class="flex-grow-1">
-                            產生座位
+                            完成設定
                         </MudButton>
                     </div>
                     @* 防呆錯誤訊息顯示區 *@
@@ -199,6 +199,10 @@
                 <li>警長：@(GlobalRule.EnableSheriff ? "啟用" : "關閉")</li>
                 <li>女巫首夜自救：@(GlobalRule.WitchCanSaveSelf ? "開啟" : "關閉")</li>
                 <li>同守同救：@(GlobalRule.DoubleDeadValid ? "存活" : "奶穿雙死")</li>
+                <li>
+                    隱狼模式：@(GlobalRule.HiddenWolfMode? "晚上與狼人一同睜眼" :
+                                        "晚上不跟狼人睜眼，" + (GlobalRule.HiddenWolfMode_ ? "若場上僅剩隱狼一名狼人時則失敗" : "場上所有狼隊友均被淘汰後隱狼可開始殺人"))
+                </li>
                 <br />
                 <li>自動播放語音：@(GlobalRule.AutoPlayVioce ? "啟用" : "停用")</li>
             </ul>
@@ -206,7 +210,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="() => isReadyDialogOpen = false" Size="Size.Large">取消</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="StartGame" Size="Size.Large" Class="px-4">天黑請閉眼</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="StartGame" Size="Size.Large" Class="px-4">開始抽牌</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -309,8 +313,19 @@
 
     private void StartGame()
     {
+        // List<RoleItem> roleItems = GameManager.CurrentSetup.Roles;
+        GameManager.UsingRoles = GameManager.CurrentSetup.Roles
+        .Select(x => new RoleItem
+        {
+            Role = x.Role,
+            Name = x.Name,
+            Count = x.Count,
+            Faction = x.Faction,
+            onlyOne = x.onlyOne
+        }).ToList();
+
         readyErrorMessage = "";
-        isReadyDialogOpen = false;
-        NavigationManager.NavigateTo("game");
+        isReadyDialogOpen = false; 
+        NavigationManager.NavigateTo("/draw");
     }
 }

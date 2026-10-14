@@ -1,0 +1,164 @@
+﻿@page "/draw"
+@using Werewolf.Models
+@using Werewolf.Services
+@inject GameManager GameManager
+@inject NavigationManager NavigationManager
+
+<div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
+
+    @if (currentlyRevealedCard == null)
+    {
+        <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">玩家抽牌階段</MudText>
+        <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="mb-6 font-weight-bold">請 【 @currentDrawingSeat 】 號玩家選擇卡牌</MudText>
+
+        @* 攤在桌上的牌陣 *@
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 95vw; padding: 20px;">
+            @foreach (var card in DeckOnTable)
+            {
+                if (card.IsPicked)
+                {
+                    @* 卡牌被抽走後留下的空位 *@
+                    <div style="@GetCardSizeStyle() aspect-ratio: 2.5/3.5; visibility: hidden;"></div>
+                }
+                else
+                {
+                    @* 尚未被抽走的牌背 (無邊框，圖片完全貼滿，動態大小) *@
+                    <div style="@GetCardSizeStyle() aspect-ratio: 2.5/3.5; border-radius: 8px; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.8); overflow: hidden; transition: transform 0.1s; padding: 0; background-color: transparent;"
+                         @onclick="() => RevealCard(card)"
+                         onmouseover="this.style.transform='scale(1.05)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                        <img src="images/cardback.png" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none';" />
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        @* 顯示被點開的卡牌 *@
+        <MudText Typo="Typo.h4" Style="color: white;" Class="mb-6 font-weight-bold">玩家抽牌階段</MudText>
+        <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="mb-6 font-weight-bold">【 @currentDrawingSeat 】 號玩家的身分是：</MudText>
+
+        <div style="width: 35vw; max-width: 300px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: 6px solid #FFD700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);">
+            <img src="@($"images/roles/{currentlyRevealedCard.Role}.png")" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+            <div style="display: none; width: 100%; height: 100%; background-color: #444; color: white; flex-direction: column; justify-content: center; align-items: center;">
+                <MudText Typo="Typo.h3" Class="font-weight-bold">@GetRoleName(currentlyRevealedCard.Role)</MudText>
+            </div>
+        </div>
+
+        <MudText Typo="Typo.body1" Style="color: white;" Class="mt-8 mb-3 font-weight-bold">確認身分後，請點擊下方按鈕</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="NextPlayerDraw">
+            隱藏並傳給下一位
+        </MudButton>
+    }
+</div>
+
+@code {
+    private int currentDrawingSeat = 1;
+
+    // 用來追蹤桌面上每一張牌的狀態
+    private List<CardState> DeckOnTable = new();
+    private CardState? currentlyRevealedCard = null;
+
+    protected override void OnInitialized()
+    {
+        if (GameManager.CurrentSetup.Roles.Sum(r => r.Count) == 0)
+        {
+            NavigationManager.NavigateTo("");
+            return;
+        }
+
+        if (GameManager.Players.Count == 0)
+        {
+            GameManager.InitializeGame();
+        }
+
+        InitializeDeck();
+    }
+
+    private string GetRoleName(Role r) => GameManager.CurrentSetup.Roles.FirstOrDefault(x => x.Role == r)?.Name ?? "未知";
+
+    private void InitializeDeck()
+    {
+        var tempDeck = new List<Role>();
+
+        foreach (var roleItem in GameManager.CurrentSetup.Roles)
+        {
+            for (int i = 0; i < roleItem.Count; i++)
+            {
+                tempDeck.Add(roleItem.Role);
+            }
+        }
+
+        var rnd = new Random();
+        tempDeck = tempDeck.OrderBy(x => rnd.Next()).ToList();
+
+        // 將洗好的 Role 轉換為實體卡牌狀態物件
+        DeckOnTable = tempDeck.Select(r => new CardState { Role = r }).ToList();
+
+        currentDrawingSeat = 1;
+        currentlyRevealedCard = null;
+    }
+
+    private void RevealCard(CardState selectedCard)
+    {
+        currentlyRevealedCard = selectedCard;
+    }
+
+    private void NextPlayerDraw()
+    {
+        if (currentlyRevealedCard == null) return;
+
+        // 1. 將抽到的牌分配給當前玩家
+        var player = GameManager.Players.FirstOrDefault(p => p.SeatNumber == currentDrawingSeat);
+        if (player != null)
+        {
+            player.Role = currentlyRevealedCard.Role;
+            var roleInfo = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == currentlyRevealedCard.Role);
+            player.RoleName = roleInfo?.Name ?? "未知";
+            player.Faction = roleInfo?.Faction ?? "未知";
+        }
+
+        // 2. 將這張牌標記為「已抽走」(畫面將會隱藏它並留下空位)
+        currentlyRevealedCard.IsPicked = true;
+        currentlyRevealedCard = null;
+
+        currentDrawingSeat++;
+
+        // 3. 如果所有玩家都抽完了
+        if (currentDrawingSeat > GameManager.Players.Count)
+        {
+            // 找出桌面上沒有被抽走的牌 (這就是盜賊的底牌！)
+            var remainingCards = DeckOnTable.Where(c => !c.IsPicked).Select(c => c.Role).ToList();
+            if (remainingCards.Count >= 2)
+            {
+                GameManager.BottomCards = new List<Role> { remainingCards[0], remainingCards[1] };
+            }
+
+            NavigationManager.NavigateTo("game");
+        }
+    }
+
+    // 用來記錄每一張卡牌狀態的類別
+    public class CardState
+    {
+        public Role Role { get; set; }
+        public bool IsPicked { get; set; } = false;
+    }
+
+    // 根據總牌數動態決定卡牌大小
+    private string GetCardSizeStyle()
+    {
+        int totalCards = DeckOnTable.Count;
+
+        if (totalCards <= 8)
+            return "width: 18vw; min-width: 100px; max-width: 160px;";
+        else if (totalCards <= 12)
+            return "width: 14vw; min-width: 85px; max-width: 130px;";
+        else if (totalCards <= 15)
+            return "width: 11vw; min-width: 75px; max-width: 110px;";
+        else
+            return "width: 9vw; min-width: 60px; max-width: 90px;"; // 16人以上大局，縮小卡牌
+    }
+}

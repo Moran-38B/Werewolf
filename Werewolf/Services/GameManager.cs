@@ -8,6 +8,7 @@ namespace Werewolf.Services
     {
         public GameRule GlobalRule { get; set; } = new();
         public RoleSetup CurrentSetup { get; set; } = new();
+        public List<RoleItem> UsingRoles { get; set; } = new();
         
         public List<Player> Players { get; set; } = new();
 

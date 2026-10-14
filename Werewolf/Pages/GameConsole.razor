@@ -122,6 +122,7 @@
                 </MudCard>
             </MudItem>
 
+            @* 玩家座位表 *@
             <MudItem xs="12" md="9">
                 <MudCard Elevation="3" Class="pa-4">
                     <MudText Typo="Typo.h6" Class="mb-4"><MudIcon Icon="@Icons.Material.Filled.EventSeat" Class="mr-2 mb-n1" /> 玩家座位表</MudText>
@@ -129,7 +130,7 @@
                     <MudGrid Spacing="2" Class="mb-6">
                         @foreach (var player in GameManager.Players)
                         {
-                            bool isSelected = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && IsSpecialWolf(player.Role));
+                            bool isSelected = player.Role == CurrentPhase.Role || (CurrentPhase.Role == Role.Werewolf && WorkInWolfGroup(player.Role));
                             bool isLocked = player.Role != Role.Unknown && !isSelected;
                             var isTargeted = currentTargetSeats.Contains(player.SeatNumber) || (CurrentPhase.PhaseId == "Witch" && witchPoisonTarget == player.SeatNumber);
 
@@ -181,9 +182,12 @@
                         <MudText Typo="Typo.subtitle1" Class="mb-2 mt-2 font-weight-bold">設定特殊狼 (點選下方按鈕，再點擊上方座位)：</MudText>
                         <div class="d-flex gap-3 flex-wrap">
                             <MudButton Variant="@(activeSpecialWolf == Role.Unknown ? Variant.Filled : Variant.Outlined)" Color="Color.Error" OnClick="@(() => activeSpecialWolf = Role.Unknown)">一般狼人</MudButton>
-                            @foreach (var sw in GetSpecialWolvesInSetup())
-                            {
-                                <MudButton Variant="@(activeSpecialWolf == sw.Role ? Variant.Filled : Variant.Outlined)" Color="Color.Error" OnClick="@(() => activeSpecialWolf = sw.Role)">@sw.Name</MudButton>
+                            @{
+                                var a = GameManager.CurrentSetup.Roles.Where(r => WorkInWolfGroup(r.Role) && r.Count > 0).ToList(); ;
+                                @foreach (var sw in @* GetSpecialWolvesInSetup() *@ a)
+                                {
+                                    <MudButton Variant="@(activeSpecialWolf == sw.Role ? Variant.Filled : Variant.Outlined)" Color="Color.Error" OnClick="@(() => activeSpecialWolf = sw.Role)">@sw.Name</MudButton>
+                                }
                             }
                         </div>
                     }
@@ -279,6 +283,7 @@
 
     private List<int> currentTargetSeats = new();
     private Role thiefFinalRole = Role.Unknown;
+    private Role thiefTrashRole = Role.Unknown;
     private int selectedThiefCardIndex = -1; // 追蹤玩家選擇的是左邊還是右邊的卡片
     private Role activeSpecialWolf = Role.Unknown;
     private bool witchUsedSave = false;
@@ -330,9 +335,8 @@
         //Update: 添加各職業使用技能判斷
 
         if (rolesInPlay.Any(r => r.Role == Role.Thief))
-        {
             NightPhases.Add(new NightPhase { PhaseId = "Thief", Role = Role.Thief, RoleName = "盜賊", ScriptText = "盜賊請睜眼，請選擇你要換的身分。", MaxTargets = 0 });
-        }
+
 
         foreach (var setupRole in rolesInPlay)
         {
@@ -394,9 +398,12 @@
 
         if (belongsToCurrentPhase)
         {
-            player.Role = Role.Unknown;
-            player.RoleName = "未知身份";
-            player.Faction = "未知";
+            if (player.RoleChangeRecord.FirstOrDefault() != Role.Thief)
+            {
+                player.Role = Role.Unknown;
+                player.RoleName = "未知身份";
+                player.Faction = "未知";
+            }
         }
         else
         {
@@ -425,32 +432,76 @@
             int currentAssigned = GameManager.Players.Count(p => p.Role == targetRole);
 
             //Update: 設定座位前，先檢查底牌是否包含該角色，如果包含，則不允許分配 盜賊!!!
-            Role[] cards = GameManager.BottomCards.Take(2).ToArray();
-            //if (cards.Contains(targetRole))
-            //    return;
-            int count = GameManager.CurrentSetup.Roles.Count(x=>x.Role == targetRole);
-            foreach(var i in cards){
-                if (i == targetRole)
-                    count--;
-            }
-            if(currentAssigned >= count)
-                return;
+            // Role[] cards = GameManager.BottomCards.Take(2).ToArray();
+            // int a = cards.Take(2).Count(x => x == targetRole);
 
-            
-            // 如果已經分配的數量達到上限，將第一個已分配該角色的玩家重置為未知身份
-            if (currentAssigned >= roleInfo.Count)
+            // var roles = GameManager.CurrentSetup.Roles.ToList();
+            // int count = GameManager.CurrentSetup.Roles.FirstOrDefault(x => x.Role == targetRole).Count - a;
+            // if (currentAssigned >= count)
+            //     return;
+
+            Role[] bottomCards = GameManager.BottomCards.ToArray();
+            var AAA = GameManager.HasThief;
+            // 選到盜賊底牌
+            if (AAA && bottomCards.Contains(targetRole))
             {
-                var firstSeat = GameManager.Players.FirstOrDefault(p => p.Role == targetRole);
-                if (firstSeat != null)
+                if (currentAssigned >= roleInfo.Count)
                 {
-                    firstSeat.Role = Role.Unknown;
-                    firstSeat.RoleName = "未知身份";
-                    firstSeat.Faction = "未知";
+                    var seat = GameManager.Players.FirstOrDefault(x => x.Role == targetRole && x.RoleChangeRecord.FirstOrDefault() != Role.Thief);
+                    if (seat != null)
+                    {
+                        seat.Role = Role.Unknown;
+                        seat.RoleName = "未知身份";
+                        seat.Faction = "未知";
+                        seat.RoleChangeRecord.RemoveAt(0);
+                    }
                 }
+
+                if (!roleInfo.onlyOne)
+                {
+                    player.Role = targetRole;
+                    player.RoleName = roleInfo.Name;
+                    player.Faction = roleInfo.Faction;
+                    player.RoleChangeRecord.Add(targetRole);
+                }
+                else
+                {
+
+                }
+
+                // if (bottomCards.FirstOrDefault(x => x != thiefFinalRole) == targetRole)
+                // {
+
+                // }
+                // else
+                // {
+                //     player.Role = targetRole;
+                //     player.RoleName = roleInfo.Name;
+                //     player.Faction = roleInfo.Faction;
+                //     player.RoleChangeRecord.Add(targetRole);
+                // }
             }
-            player.Role = targetRole;
-            player.RoleName = roleInfo.Name;
-            player.Faction = roleInfo.Faction;
+
+
+            // 如果已經分配的數量達到上限，將第一個已分配該角色的玩家重置為未知身份
+            else
+            {
+                if (currentAssigned >= roleInfo.Count)
+                {
+                    var firstSeat = GameManager.Players.FirstOrDefault(p => p.Role == targetRole);
+                    if (firstSeat != null)
+                    {
+                        firstSeat.Role = Role.Unknown;
+                        firstSeat.RoleName = "未知身份";
+                        firstSeat.Faction = "未知";
+                        firstSeat.RoleChangeRecord.RemoveAt(0);
+                    }
+                }
+                player.Role = targetRole;
+                player.RoleName = roleInfo.Name;
+                player.Faction = roleInfo.Faction;
+                player.RoleChangeRecord.Add(targetRole);
+            }
         }
     }
 
@@ -491,12 +542,16 @@
 
     private bool IsWolfInWolfPhase(Role role)
     {
-        return IsWolfFaction(role) && role != Role.Gargoyle && role != Role.HiddenWolf;
+        return (IsWolfFaction(role) || (role == Role.HiddenWolf && !GameRule.HiddenWolfMode)) && role != Role.Gargoyle;
     }
 
     private bool HasSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Any(r => IsSpecialWolf(r.Role) && r.Count > 0);
-    private List<RoleItem> GetSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Where(r => IsSpecialWolf(r.Role) && r.Count > 0).ToList();
+    private List<RoleItem> GetSpecialWolvesInSetup() => GameManager.CurrentSetup.Roles.Where(r => WorkInWolfGroup(r.Role) && r.Count > 0).ToList();
+    //
     private bool IsSpecialWolf(Role role) => role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.GhostRider || role == Role.BloodMoonApostle;
+    // 與狼人一同睜眼
+    private bool WorkInWolfGroup(Role role) => /*role == Role.Werewolf || */role == Role.WolfKing || role == Role.WhiteWolfKing || role == Role.WolfBeauty || role == Role.GhostRider || role == Role.BloodMoonApostle || (role == Role.HiddenWolf && GameManager.GlobalRule.HiddenWolfMode);
+    // private List<RoleItem> GetWorkInWolfGroup() => GameManager.CurrentSetup.Roles.Where(x=>x )
 
     private void OnNextStepClicked()
     {
@@ -511,13 +566,16 @@
             if (CurrentPhase.Role == Role.Werewolf)
             {
                 // 狼人階段：所有狼人與特殊狼 (扣除盜賊變身者、石像鬼、隱狼)
-                expectedCount = GameManager.CurrentSetup.Roles.Where(r => IsWolfInWolfPhase(r.Role)).Sum(r => r.Count);
+                // 以處理被盜賊廢棄的牌
+                expectedCount = GameManager.UsingRoles.Where(r => IsWolfInWolfPhase(r.Role)).Sum(r => r.Count);
+                // 處理已被選擇的牌
+                if (thiefTrashRole == Role.Werewolf || WorkInWolfGroup(thiefTrashRole)) expectedCount--;
                 actualCount = GameManager.Players.Count(p => IsWolfInWolfPhase(p.Role) && !p.RoleName.Contains("(盜賊)"));
                 roleDisplayName = "狼人陣營";
             }
             else
             {
-                expectedCount = GameManager.CurrentSetup.Roles.FirstOrDefault(r => r.Role == CurrentPhase.Role)?.Count ?? 0;
+                expectedCount = GameManager.UsingRoles.FirstOrDefault(r => r.Role == CurrentPhase.Role)?.Count ?? 0;
                 actualCount = GameManager.Players.Count(p => p.Role == CurrentPhase.Role && !p.RoleName.Contains("(盜賊)"));
             }
 
@@ -560,6 +618,7 @@
                 selectedThiefCardIndex = -1;
             }
 
+
             isPlayerSelectingThiefCard = true;
             return;
         }
@@ -596,7 +655,14 @@
             thiefPlayer.Role = thiefFinalRole;
             thiefPlayer.RoleName = $"{rInfo?.Name} (盜賊)";
             thiefPlayer.Faction = rInfo?.Faction ?? "未知";
+            thiefPlayer.RoleChangeRecord.Add(rInfo.Role);
         }
+
+        thiefTrashRole = GameManager.BottomCards.FirstOrDefault(x => x != thiefFinalRole);
+        // ?
+        GameManager.UsingRoles.RemoveAll(x => x.Role == Role.Thief);
+        GameManager.UsingRoles.FirstOrDefault(x => x.Role == thiefTrashRole).Count -= 1;
+        GameManager.UsingRoles.RemoveAll(x => x.Role == thiefTrashRole && x.Count < 1);
 
         isPlayerSelectingThiefCard = false;
         NextStep();
