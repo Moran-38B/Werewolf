@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "ukNot/c5",
+  "version": "SdsPVGcu",
   "assets": [
     {
       "hash": "sha256-dq5zU/fWU52wjS2NYc1JF98rU7Eh1fW2F/0n6f0ItLY=",
@@ -142,8 +142,8 @@ self.assetsManifest = {
       "url": "_framework/System.Net.Primitives.linpzmvv9q.wasm"
     },
     {
-      "hash": "sha256-3xCvpWCnCbdPYSAJ5Rca+7POOzR6/oYc6Pr5ypSqAYQ=",
-      "url": "_framework/System.Private.CoreLib.fko28wiqy6.wasm"
+      "hash": "sha256-FBkKVU8oq2JpwmXcgn5zwJ7BBj7kPeDMzktpkjPi/C4=",
+      "url": "_framework/System.Private.CoreLib.0laqxkh75j.wasm"
     },
     {
       "hash": "sha256-E4GkadGWiiDlt0EmaTAUx5p9/GpfpgieCOMTvFSTMms=",
@@ -158,8 +158,8 @@ self.assetsManifest = {
       "url": "_framework/System.Runtime.Numerics.6aoa9qfwds.wasm"
     },
     {
-      "hash": "sha256-fkEGIzsxFgMTiGGJg/Ar7DW9m91CoWo4dZK9j2/6niE=",
-      "url": "_framework/System.Runtime.u0aree5nk8.wasm"
+      "hash": "sha256-UDphB9+EYW0Oz03/pfEJ3gK6wPepsqHgtNbqmYXm3lU=",
+      "url": "_framework/System.Runtime.gslg4t9f17.wasm"
     },
     {
       "hash": "sha256-PJnFgVKSoB0TNWJSfzXKHf8spBwn98YHVCFELdwxgR8=",
@@ -174,11 +174,11 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.7l12welszt.wasm"
     },
     {
-      "hash": "sha256-I+sCQjarx7yjoG1VxyKK+uJey/wpgyZxapxxYHPGkXE=",
-      "url": "_framework/Werewolf.dozdner8sn.wasm"
+      "hash": "sha256-ZYdAkfNht/iLkMOPcBR936tM58ffwcp/opx6ZrJP1Yc=",
+      "url": "_framework/Werewolf.zuwpaf2s4r.wasm"
     },
     {
-      "hash": "sha256-+TGd9pbl6WbkWHBRrY9pzZS/UVj16OctNxg3pHdrObs=",
+      "hash": "sha256-2KdRcr711bWu20NTLTGep4TMbhpjhKAlCE5Lgn7idug=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -228,6 +228,10 @@ self.assetsManifest = {
     {
       "hash": "sha256-oEo6d+KqX5fjxTiZk/w9NB3Mi0+ycS5yLwCKwr4IkbA=",
       "url": "icon-512.png"
+    },
+    {
+      "hash": "sha256-OMjwx1PuFMknHRq4J2oWZ/4dBuccEV/t9KJuPgev0/I=",
+      "url": "images/cardback.png"
     },
     {
       "hash": "sha256-eLkBd1MNSvMfdxwFuaRd4TuIsVnTnGXSQiPmRJ6o65s=",
