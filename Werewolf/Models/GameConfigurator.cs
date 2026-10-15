@@ -82,7 +82,7 @@ namespace Werewolf.Models
             SetRoleCount(test, Role.GraveKeeper, 1);
             SetRoleCount(test, Role.DemonHunter, 1);
             SetRoleCount(test, Role.Dreamcatcher, 1);
-            SetRoleCount(test, Role.Magician, 1);
+            //SetRoleCount(test, Role.Magician, 1);
             SetRoleCount(test, Role.Crow, 1);
             SetRoleCount(test, Role.Bomber, 1);
             SetRoleCount(test, Role.Cupid, 1);

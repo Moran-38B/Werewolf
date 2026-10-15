@@ -94,7 +94,7 @@
                     @foreach (var role in CurrentSetup.Roles.Where(r => r.Faction == "神職" || r.Faction == "第三方"))
                     {
                         <MudItem xs="6" sm="4">
-                            <MudCheckBox T="bool" Value="@(role.Count > 0)" ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))" Label="@role.Name" Color="Color.Primary" />
+                            <MudCheckBox T="bool" Value="@(role.Count > 0)" ValueChanged="@((bool isChecked) => OnRoleChecked(role, isChecked))" Label="@role.Name" Color="Color.Primary" Disabled="@(role.Role == Role.Magician)" />
                         </MudItem>
                     }
                 </MudGrid>
