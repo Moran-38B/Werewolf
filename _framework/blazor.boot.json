@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Werewolf",
   "resources": {
-    "hash": "sha256-dI2BP2+d+Vr6pN9pU2zGgxmvKaRYuaFM22fx2bt3pDY=",
+    "hash": "sha256-f0SM+l6bmI3/3syxYrMk9KmhlDDrkaLzGUE1ej0M0bg=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.uvw04aawoi.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Forms.k4xpc0uo5x.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -37,12 +37,12 @@
       "System.Private.Uri.tkg0jaxze6.wasm": "System.Private.Uri.wasm",
       "System.Runtime.InteropServices.JavaScript.fge8107jim.wasm": "System.Runtime.InteropServices.JavaScript.wasm",
       "System.Runtime.Numerics.6aoa9qfwds.wasm": "System.Runtime.Numerics.wasm",
-      "System.Runtime.gslg4t9f17.wasm": "System.Runtime.wasm",
+      "System.Runtime.nmh4yevgw3.wasm": "System.Runtime.wasm",
       "System.Text.Encodings.Web.otlnnlesab.wasm": "System.Text.Encodings.Web.wasm",
       "System.Text.Json.dotf3un4tp.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.7l12welszt.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.0laqxkh75j.wasm": "System.Private.CoreLib.wasm",
-      "Werewolf.v4tyo2sfu8.wasm": "Werewolf.wasm",
+      "Werewolf.1usshcc4ex.wasm": "Werewolf.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.6sals8nuk0.js": "dotnet.native.js",
       "dotnet.native.zzmgzj9wb3.wasm": "dotnet.native.wasm",
@@ -103,11 +103,11 @@
       "System.Net.Primitives.linpzmvv9q.wasm": "sha256-TQ57yanIpfdSS83FnKBn3HxPUSthPwJTM7jGjuKbHjo=",
       "System.Private.Uri.tkg0jaxze6.wasm": "sha256-E4GkadGWiiDlt0EmaTAUx5p9/GpfpgieCOMTvFSTMms=",
       "System.Runtime.Numerics.6aoa9qfwds.wasm": "sha256-btoJ50zf3rNhE1eFOJblAhMGnw/AGZh9X084EQz9kos=",
-      "System.Runtime.gslg4t9f17.wasm": "sha256-UDphB9+EYW0Oz03/pfEJ3gK6wPepsqHgtNbqmYXm3lU=",
+      "System.Runtime.nmh4yevgw3.wasm": "sha256-P3wi6xMzWaIORYCIcmbSlKYh1R55P3811jXagIMv3+o=",
       "System.Text.Encodings.Web.otlnnlesab.wasm": "sha256-PJnFgVKSoB0TNWJSfzXKHf8spBwn98YHVCFELdwxgR8=",
       "System.Text.Json.dotf3un4tp.wasm": "sha256-AzF0SUUmwOuhdDX/PI7MBpjLOwCkb9RB5owYfFsfDy0=",
       "System.Text.RegularExpressions.7l12welszt.wasm": "sha256-dSPjSZC0zDXURv1jY7Nnx0dLh76dUmvp4CXuS4uuda4=",
-      "Werewolf.v4tyo2sfu8.wasm": "sha256-/6cOS/BepTolbkDoiDvSVDvP4SRO9noBNycUqJgsZ8w="
+      "Werewolf.1usshcc4ex.wasm": "sha256-B17IudP3bfujab2aYQUwVjkMc/9Gpdk+Y6qXNHGeCoQ="
     }
   },
   "cacheBootResources": true,
