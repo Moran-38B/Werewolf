@@ -13,6 +13,7 @@ namespace Werewolf.Models
         public List<Role> RoleChangeRecord = new();
 
         public bool IsAlive { get; set; } = true;
+        //警徽
         public bool HasBadge { get; set; } = false;
         public string DeadReason { get; set; } = "";
     }

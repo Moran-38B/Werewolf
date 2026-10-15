@@ -35,9 +35,9 @@
     }
 
     /* ==================================================
-           第一層：改用 Flexbox 彈性排版
-           加入 justify-content: center 讓最後一行的單數卡牌自動置中！
-        ================================================== */
+               第一層：改用 Flexbox 彈性排版
+               加入 justify-content: center 讓最後一行的單數卡牌自動置中！
+            ================================================== */
     .layer-1-flex {
         display: flex;
         flex-wrap: wrap;
@@ -60,8 +60,8 @@
     }
 
     /* ==================================================
-           第二層與第三層維持完美比例設定
-        ================================================== */
+               第二層與第三層維持完美比例設定
+            ================================================== */
     .layer-2-card-box {
         height: 100%;
         max-width: 100%;
@@ -194,7 +194,7 @@
     {
         var tempDeck = new List<Role>();
 
-        foreach (var roleItem in GameManager.CurrentSetup.Roles)
+        foreach (var roleItem in GameManager.UsingRoles)
         {
             for (int i = 0; i < roleItem.Count; i++)
             {
@@ -216,13 +216,15 @@
         int count = DeckOnTable.Count;
         int cols, rows;
 
-        if (count <= 6) { cols = 6; rows = 1; }
+        if (count <= 6) { cols = 3; rows = 2; }
         else if (count <= 8) { cols = 4; rows = 2; }
         else if (count <= 10) { cols = 5; rows = 2; }
         else if (count <= 12) { cols = 6; rows = 2; }
         else if (count <= 14) { cols = 7; rows = 2; }
         else if (count <= 15) { cols = 5; rows = 3; }
         else if (count <= 18) { cols = 6; rows = 3; }
+        else if (count <= 21) { cols = 7; rows = 3; }
+        else if (count <= 24) { cols = 8; rows = 3; }
         else { cols = (int)Math.Ceiling(count / 4.0); rows = 4; }
 
         double ratioWidth = cols * 2.5;
@@ -261,7 +263,7 @@
             {
                 GameManager.BottomCards = new List<Role> { remainingCards[0], remainingCards[1] };
             }
-            NavigationManager.NavigateTo("game");
+            NavigationManager.NavigateTo("night");
         }
     }
 

@@ -145,6 +145,7 @@
     </DialogActions>
 </MudDialog>
 
+@*check*@
 <MudDialog @bind-Visible="isReadyDialogOpen" Options="new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true }">
     <TitleContent>
         <MudText Typo="Typo.h6" Color="Color.Primary">
@@ -152,7 +153,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudText Typo="Typo.body1" Class="mb-4 font-weight-bold">請確認所有玩家已就座，並將設備交由法官操作。</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4 font-weight-bold">請確認所有玩家已就座</MudText>
 
         <MudPaper Elevation="0" Class="pa-4 mb-4" Style="background-color: var(--mud-palette-background-grey); border-radius: 8px;">
             <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2 font-weight-bold">本局配置總結 (@TotalPlayers 人局)</MudText>
@@ -207,10 +208,35 @@
                 <li>自動播放語音：@(GlobalRule.AutoPlayVioce ? "啟用" : "停用")</li>
             </ul>
         </MudPaper>
+
+        @* @if (HasThief)
+        {
+            <MudText Typo="Typo.subtitle2" Color="Color.Warning" Class="mt-2 font-weight-bold">
+                <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" Class="mr-1 mb-n1" /> 盜賊排底設定 (遊戲開始前必填)
+            </MudText>
+            <div class="d-flex gap-4 mt-2">
+                @for (int i = 0; i < 2; i++)
+                {
+                    var index = i;
+                    <MudSelect T="Role" Label="@($"底牌 {index + 1}")" Value="@GameManager.BottomCards[index]" ValueChanged="@((Role r) => GameManager.BottomCards[index] = r)" Variant="Variant.Outlined" Margin="Margin.Dense">
+                        <MudSelectItem Value="@Role.Unknown">未知身份</MudSelectItem>
+                        @foreach (var r in GetAvailableBottomCards(index))
+                        {
+                            <MudSelectItem Value="@r.Role">@r.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(readyErrorMessage))
+            {
+                <MudText Typo="Typo.body2" Color="Color.Error" Class="mt-2 font-weight-bold">@readyErrorMessage</MudText>
+            }
+        } *@
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="() => isReadyDialogOpen = false" Size="Size.Large">取消</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="StartGame" Size="Size.Large" Class="px-4">開始抽牌</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="StartDraw" Size="Size.Large" Class="px-4">開始抽牌</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -304,16 +330,23 @@
         var otherIndex = index == 0 ? 1 : 0;
         var otherRole = GameManager.BottomCards[otherIndex];
 
-        foreach (var r in CurrentSetup.Roles.Where(x => x.Count > 0 && x.Role != Role.Villager))
+        foreach (var r in CurrentSetup.Roles.Where(x => x.Count > 0))
         {
             if ((r.Count == 1 && r.Role == otherRole) || r.Role == Role.Thief) continue;
             yield return r;
         }
     }
 
-    private void StartGame()
+    private void StartDraw()
     {
-        // List<RoleItem> roleItems = GameManager.CurrentSetup.Roles;
+        // if (GameManager.HasThief)
+        // {
+        //     if(GameManager.BottomCards[0] == Role.Unknown || GameManager.BottomCards[1] == Role.Unknown)
+        //     {
+        //         readyErrorMessage = "請先選擇兩張盜賊的底牌！";
+        //         return;
+        //     }
+
         GameManager.UsingRoles = GameManager.CurrentSetup.Roles
         .Select(x => new RoleItem
         {
@@ -324,8 +357,53 @@
             onlyOne = x.onlyOne
         }).ToList();
 
+        //     GameManager.UsingRoles.RemoveAll(x=>GameManager.BottomCards.Contains(x=))
+        //     foreach (var i in GameManager.BottomCards)
+        //         GameManager.UsingRoles.FirstOrDefault(x => x.Role == i).Count--;
+        //     GameManager.UsingRoles.RemoveAll(x => x.Count == 0);
+        // }
+
+        //測試使用
+        List<Role> roles = new();
+        foreach (var i in GameManager.CurrentSetup.Roles)
+        {
+            if (i.Count == 1)
+                roles.Add(i.Role);
+            else
+                for (int j = 0; j < i.Count; j++)
+                    roles.Add(i.Role);
+        }
+        roles = roles.OrderBy(x => Guid.NewGuid()).ToList();
+        int count = GameManager.CurrentSetup.Roles.Sum(x => x.Count);
+        if (GameManager.HasThief) count -= 2;
+        for (int i = 0; i < roles.Count; i++)
+        {
+            RoleItem role = GameDictionary.GetAllRoles().FirstOrDefault(x => x.Role == roles[i]);
+            // GameManager.Players[i].Role = role.Role;
+            // GameManager.Players[i].Faction = role.Faction;
+            // GameManager.Players[i].RoleName = role.Name;
+            // GameManager.Players[i].RoleChangeRecord.Add(role.Role);
+            if (i < count)
+                GameManager.Players.Add(new Player()
+                {
+                    SeatNumber = i + 1,
+                    RoleName = role.Name,
+                    Role = role.Role,
+                    Faction = role.Faction,
+                    RoleChangeRecord = new List<Role>()
+                });
+            else
+                GameManager.BottomCards[i - count] = role.Role;
+        }
+
         readyErrorMessage = "";
-        isReadyDialogOpen = false; 
+        isReadyDialogOpen = false;
+        NavigationManager.NavigateTo("night");
+        return;
+
+
+        readyErrorMessage = "";
+        isReadyDialogOpen = false;
         NavigationManager.NavigateTo("draw");
     }
 }
