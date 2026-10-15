@@ -2,64 +2,173 @@
 @using Werewolf.Models
 @using Werewolf.Services
 @inject GameManager GameManager
-@inject NavigationManager NavigationManager 
+@inject NavigationManager NavigationManager
 
+<style>
+    .layout-wrapper {
+        position: fixed;
+        inset: 0;
+        background-color: #1a1a27;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        padding: 2vmin;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
 
-<div style="position: fixed; inset: 0; background-color: #1a1a27; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 5vh; box-sizing: border-box; overflow: hidden;">
+    .header-area {
+        flex: 0 0 auto;
+        text-align: center;
+        margin-bottom: 2vmin;
+    }
+
+    .grid-wrapper {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ==================================================
+           第一層：改用 Flexbox 彈性排版
+           加入 justify-content: center 讓最後一行的單數卡牌自動置中！
+        ================================================== */
+    .layer-1-flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* 👈 解決右下角空白的核心魔法 */
+        align-content: flex-start;
+        gap: 1.5vmin;
+        max-width: 100%;
+        max-height: 100%;
+        /* aspect-ratio 和行列變數將由 C# 動態注入 */
+    }
+
+    /* 網格內的單一儲存格 */
+    .grid-cell {
+        /* 透過 C# 傳來的 --cols 和 --rows 變數，精準扣除 gap 後算出每個格子的完美寬高 */
+        width: calc((100% - (var(--cols) - 1) * 1.5vmin) / var(--cols));
+        height: calc((100% - (var(--rows) - 1) * 1.5vmin) / var(--rows));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ==================================================
+           第二層與第三層維持完美比例設定
+        ================================================== */
+    .layer-2-card-box {
+        height: 100%;
+        max-width: 100%;
+        aspect-ratio: 2.5 / 3.5;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 1.5vmin rgba(0,0,0,0.8);
+        overflow: hidden;
+        transition: transform 0.1s;
+        background-color: transparent;
+    }
+
+    .layer-3-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    .revealed-area {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .revealed-layer-2-box {
+        height: 100%;
+        max-height: 60vh;
+        max-width: 100%;
+        aspect-ratio: 2.5 / 3.5;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 0.5vmin solid #FFD700;
+        box-shadow: 0 0 4vmin rgba(255, 215, 0, 0.6);
+        background-color: transparent;
+        display: flex;
+    }
+</style>
+
+<div class="layout-wrapper">
+    <div class="header-area">
+        <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">玩家抽牌階段</MudText>
+
+        @if (currentlyRevealedCard == null)
+        {
+            <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="font-weight-bold">請 【 @currentDrawingSeat 】 號玩家選擇卡牌</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="font-weight-bold">【 @currentDrawingSeat 】 號玩家的身分是：</MudText>
+        }
+    </div>
 
     @if (currentlyRevealedCard == null)
     {
-        <br/>
-        <MudText Typo="Typo.h4" Style="color: white;" Class="mb-2 font-weight-bold">玩家抽牌階段</MudText>
-        <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="mb-6 font-weight-bold">請 【 @currentDrawingSeat 】 號玩家選擇卡牌</MudText>
-
-        @* 攤在桌上的牌陣 *@
-        <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 95vw; padding: 20px;">
-            @foreach (var card in DeckOnTable)
-            {
-                if (card.IsPicked)
+        <div class="grid-wrapper">
+            @* 替換為 layer-1-flex，並注入 C# 算好的完美比例與變數 *@
+            <div class="layer-1-flex" style="@GetGridLayout()">
+                @foreach (var card in DeckOnTable)
                 {
-                    @* 卡牌被抽走後留下的空位 *@
-                    <div style="@GetCardSizeStyle() aspect-ratio: 2.5/3.5; visibility: hidden;"></div>
-                }
-                else
-                {
-                    @* 尚未被抽走的牌背 (無邊框，圖片邊緣直接接陰影) *@
-                    <div style="@GetCardSizeStyle() aspect-ratio: 2.5/3.5; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.8); overflow: hidden; transition: transform 0.1s; padding: 0; background-color: transparent;"
-                         @onclick="() => RevealCard(card)"
-                         onmouseover="this.style.transform='scale(1.05)'"
-                         onmouseout="this.style.transform='scale(1)'">
-                        <img src="images/cardback.png" style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0; padding: 0;" onerror="this.style.display='none';" />
+                    <div class="grid-cell">
+                        @if (card.IsPicked)
+                        {
+                            <div class="layer-2-card-box" style="visibility: hidden;"></div>
+                        }
+                        else
+                        {
+                            <div class="layer-2-card-box"
+                                 @onclick="() => RevealCard(card)"
+                                 onmouseover="this.style.transform='scale(1.05)'"
+                                 onmouseout="this.style.transform='scale(1)'">
+                                <img class="layer-3-image" src="images/cardback.png" onerror="this.style.display='none';" />
+                            </div>
+                        }
                     </div>
                 }
-            }
+            </div>
         </div>
     }
     else
     {
-        @* 顯示被點開的卡牌 *@
-        <MudText Typo="Typo.h4" Style="color: white;" Class="mb-6 font-weight-bold">玩家抽牌階段</MudText>
-        <MudText Typo="Typo.h5" Style="color: #FFD700;" Class="mb-6 font-weight-bold">【 @currentDrawingSeat 】 號玩家的身分是：</MudText>
-
-        <div style="width: 35vw; max-width: 300px; aspect-ratio: 2.5/3.5; border-radius: 16px; overflow: hidden; border: 6px solid #FFD700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);">
-            <img src="@($"images/roles/{currentlyRevealedCard.Role}.png")" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-
-            <div style="display: none; width: 100%; height: 100%; background-color: #444; color: white; flex-direction: column; justify-content: center; align-items: center;">
-                <MudText Typo="Typo.h3" Class="font-weight-bold">@GetRoleName(currentlyRevealedCard.Role)</MudText>
+        <div class="revealed-area">
+            <div class="revealed-layer-2-box">
+                <img class="layer-3-image" src="@($"images/roles/{currentlyRevealedCard.Role}.png")" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                <div style="display: none; width: 100%; height: 100%; background-color: #444; color: white; flex-direction: column; justify-content: center; align-items: center;">
+                    <MudText Typo="Typo.h3" Class="font-weight-bold">@GetRoleName(currentlyRevealedCard.Role)</MudText>
+                </div>
             </div>
-        </div>
 
-        <MudText Typo="Typo.body1" Style="color: white;" Class="mt-8 mb-3 font-weight-bold">確認身分後，請點擊下方按鈕</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="NextPlayerDraw">
-            隱藏並傳給下一位
-        </MudButton>
+            <MudText Typo="Typo.body1" Style="color: white;" Class="mt-6 mb-3 font-weight-bold">確認身分後，請點擊下方按鈕</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="rounded-pill" Style="width: 250px; height: 60px; font-size: 1.2rem; font-weight: bold;" OnClick="NextPlayerDraw">
+                隱藏並傳給下一位
+            </MudButton>
+        </div>
     }
 </div>
 
 @code {
     private int currentDrawingSeat = 1;
-
-    // 用來追蹤桌面上每一張牌的狀態
     private List<CardState> DeckOnTable = new();
     private CardState? currentlyRevealedCard = null;
 
@@ -95,12 +204,31 @@
 
         var rnd = new Random();
         tempDeck = tempDeck.OrderBy(x => rnd.Next()).ToList();
-
-        // 將洗好的 Role 轉換為實體卡牌狀態物件
         DeckOnTable = tempDeck.Select(r => new CardState { Role = r }).ToList();
 
         currentDrawingSeat = 1;
         currentlyRevealedCard = null;
+    }
+
+    // 核心亮點：將 cols 與 rows 轉換為 CSS 變數 (--cols, --rows) 傳遞給前端
+    private string GetGridLayout()
+    {
+        int count = DeckOnTable.Count;
+        int cols, rows;
+
+        if (count <= 6) { cols = 3; rows = 2; }
+        else if (count <= 8) { cols = 4; rows = 2; }
+        else if (count <= 10) { cols = 5; rows = 2; }
+        else if (count <= 12) { cols = 6; rows = 2; }
+        else if (count <= 15) { cols = 5; rows = 3; }
+        else if (count <= 18) { cols = 6; rows = 3; }
+        else { cols = (int)Math.Ceiling(count / 4.0); rows = 4; }
+
+        double ratioWidth = cols * 2.5;
+        double ratioHeight = rows * 3.5;
+
+        // 傳遞給 Flexbox 使用的變數，完全取代死板的 Grid
+        return $"--cols: {cols}; --rows: {rows}; aspect-ratio: {ratioWidth} / {ratioHeight};";
     }
 
     private void RevealCard(CardState selectedCard)
@@ -112,7 +240,6 @@
     {
         if (currentlyRevealedCard == null) return;
 
-        // 1. 將抽到的牌分配給當前玩家
         var player = GameManager.Players.FirstOrDefault(p => p.SeatNumber == currentDrawingSeat);
         if (player != null)
         {
@@ -122,47 +249,24 @@
             player.Faction = roleInfo?.Faction ?? "未知";
         }
 
-        // 2. 將這張牌標記為「已抽走」(畫面將會隱藏它並留下空位)
         currentlyRevealedCard.IsPicked = true;
         currentlyRevealedCard = null;
-
         currentDrawingSeat++;
 
-        // 3. 如果所有玩家都抽完了
         if (currentDrawingSeat > GameManager.Players.Count)
         {
-            // 找出桌面上沒有被抽走的牌 (這就是盜賊的底牌！)
             var remainingCards = DeckOnTable.Where(c => !c.IsPicked).Select(c => c.Role).ToList();
             if (remainingCards.Count >= 2)
             {
                 GameManager.BottomCards = new List<Role> { remainingCards[0], remainingCards[1] };
             }
-
-            NavigationManager.NavigateTo("game");
+            NavigationManager.NavigateTo("/game");
         }
     }
 
-    // 用來記錄每一張卡牌狀態的類別
     public class CardState
     {
         public Role Role { get; set; }
         public bool IsPicked { get; set; } = false;
-    }
-
-    // 根據「總牌數」與「螢幕大小(vw)」動態決定卡牌大小
-    private string GetCardSizeStyle()
-    {
-        int totalCards = DeckOnTable.Count;
-
-        // 使用 CSS clamp(最小值, 螢幕寬度比例 vw, 最大值)
-        // 這樣在 iPad (大螢幕) 或 手機 (小螢幕) 上，都會在合理的範圍內自動縮放
-        if (totalCards <= 8)
-            return "width: clamp(120px, 22vw, 200px);";
-        else if (totalCards <= 12)
-            return "width: clamp(80px, 16vw, 180px);";
-        else if (totalCards <= 16)
-            return "width: clamp(60px, 13vw, 170px);";
-        else
-            return "width: clamp(70px, 10vw, 150px);"; // 16 人以上大局
     }
 }
